@@ -1,0 +1,21 @@
+{
+    "env": {
+        "es6": true,
+        "node": true
+    },
+    "extends": "airbnb-base",
+    "rules": {
+        "strict": [0, "global"],
+        "prefer-const": 1,
+        "indent": [1, 4],
+        "class-methods-use-this": [0],
+        "import/no-extraneous-dependencies": [0],
+        "arrow-body-style": [0, "always"],
+        "no-multiple-empty-lines": [0],
+        "no-underscore-dangle": [0],
+        "comma-dangle": [0],
+        "no-plusplus": [0],
+        "no-console": [0],
+        "new-cap": [0]
+    }
+}

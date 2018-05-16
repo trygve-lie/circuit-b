@@ -1,0 +1,24 @@
+{
+  "name": "circuit-b",
+  "version": "1.0.0",
+  "description": "A non intrusive circuit breaker",
+  "main": "lib/main.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "author": "Trygve Lie",
+  "license": "MIT",
+  "scripts": {
+    "bench": "node benchmark/cache.js",
+    "test": "tap test/*.js",
+    "test:coverage": "tap test/*.js --cov",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "devDependencies": {
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.11.0",
+    "tap": "^11.1.5"
+  }
+}
