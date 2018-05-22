@@ -44,21 +44,6 @@ tap.test('.trip() - breaker is "closed" - should count failures', (t) => {
     t.end();
 });
 
-/*
-tap.test('.trip() - breaker is "closed" - reaches max failures - should reset failures', (t) => {
-    const breaker = new Breaker();
-    breaker.trip();
-    breaker.trip();
-    breaker.trip();
-    breaker.trip();
-    breaker.trip();
-    t.equal(breaker.failures, 0);
-
-    t.end();
-});
-*/
-
-
 tap.test('.trip() - breaker is "closed" - reaches max failures - should switch breaker to "open"', (t) => {
     const breaker = new Breaker();
     breaker.trip();
@@ -86,44 +71,6 @@ tap.test('.trip() - breaker is "closed" - reaches max failures - should set "tri
     clock.uninstall();
     t.end();
 });
-
-/*
-tap.test('.trip() - breaker is "half_open" - should reset failures', (t) => {
-    const breaker = new Breaker();
-    breaker.state = 'HALF_OPEN';
-
-    breaker.trip();
-    t.equal(breaker.failures, 0);
-
-    t.end();
-});
-
-tap.test('.trip() - breaker is "half_open" - should switch breaker to "open"', (t) => {
-    const breaker = new Breaker();
-    breaker.state = 'HALF_OPEN';
-
-    breaker.trip();
-    t.equal(breaker.state, 'OPEN');
-
-    t.end();
-});
-
-tap.test('.trip() - breaker is "half_open" - should set "tripped" to now + waitTreshold', (t) => {
-    const clock = lolex.install();
-    clock.tick(1000);
-
-    const breaker = new Breaker();
-    breaker.state = 'HALF_OPEN';
-
-    breaker.trip();
-    t.equal(breaker.tripped, 6000);
-
-    clock.uninstall();
-    t.end();
-});
-*/
-
-
 
 
 /**
