@@ -1,6 +1,7 @@
 'use strict';
 
 const CircuitB = require('../');
+const hostile = require('hostile');
 const http = require('http');
 const tap = require('tap');
 
@@ -32,10 +33,21 @@ const request = (address) => {
             });
         }).on('error', (error) => {
             console.log('error', error);
-            resolve(null);
+            resolve(error);
         });
     });
 };
+
+
+
+tap.test('setup', (t) => {
+    hostile.set('127.0.0.1', 'circuit-b.local', (error) => {
+        if (error) {
+            throw error;
+        }
+        t.end();
+    });
+});
 
 
 /**
@@ -56,14 +68,17 @@ tap.test('CircuitB() - foo - bar', async (t) => {
 
     cb.enable();
 
-    const data = await request(address);
+//    const data = await request(address);
     console.log('a');
 
     // cb.disable();
 
 
-    const d = await request(address);
+//    const d = await request(address);
     console.log('b');
+
+    const e = await request(`http://circuit-b.local:${address.port}`);
+    console.log('e', e);
 
 
     server.close(() => {
@@ -71,4 +86,13 @@ tap.test('CircuitB() - foo - bar', async (t) => {
     });
 
     //    t.equal(Object.prototype.toString.call(cb), '[object CircuitB]');
+});
+
+tap.test('teardown', (t) => {
+    hostile.remove('127.0.0.1', 'circuit-b.local', (error) => {
+        if (error) {
+            throw error;
+        }
+        t.end();
+    });
 });

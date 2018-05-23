@@ -9,19 +9,19 @@ const tap = require('tap');
  */
 
 tap.test('Breaker() - object type - should be Breaker', (t) => {
-    const breaker = new Breaker();
+    const breaker = new Breaker('circuit-b.local');
     t.equal(Object.prototype.toString.call(breaker), '[object Breaker]');
     t.end();
 });
 
 tap.test('Breaker() - no "maxFailures" argument set - should set default "maxFailures" to 5', (t) => {
-    const breaker = new Breaker();
+    const breaker = new Breaker('circuit-b.local');
     t.equal(breaker.maxFailures, 5);
     t.end();
 });
 
 tap.test('Breaker() - "maxFailures" argument set - should set "maxFailures" to value', (t) => {
-    const breaker = new Breaker(10);
+    const breaker = new Breaker('circuit-b.local', 10);
     t.equal(breaker.maxFailures, 10);
     t.end();
 });
@@ -32,7 +32,7 @@ tap.test('Breaker() - "maxFailures" argument set - should set "maxFailures" to v
  */
 
 tap.test('.trip() - breaker is "closed" - should count failures', (t) => {
-    const breaker = new Breaker();
+    const breaker = new Breaker('circuit-b.local');
     t.equal(breaker.failures, 0);
 
     breaker.trip();
@@ -45,7 +45,7 @@ tap.test('.trip() - breaker is "closed" - should count failures', (t) => {
 });
 
 tap.test('.trip() - breaker is "closed" - reaches max failures - should switch breaker to "open"', (t) => {
-    const breaker = new Breaker();
+    const breaker = new Breaker('circuit-b.local');
     breaker.trip();
     breaker.trip();
     breaker.trip();
@@ -60,7 +60,7 @@ tap.test('.trip() - breaker is "closed" - reaches max failures - should set "tri
     const clock = lolex.install();
     clock.tick(1000);
 
-    const breaker = new Breaker();
+    const breaker = new Breaker('circuit-b.local');
     breaker.trip();
     breaker.trip();
     breaker.trip();
@@ -78,7 +78,7 @@ tap.test('.trip() - breaker is "closed" - reaches max failures - should set "tri
  */
 
 tap.test('.check() - No alter to default object  - should return "false"', (t) => {
-    const breaker = new Breaker();
+    const breaker = new Breaker('circuit-b.local');
     const result = breaker.check();
 
     t.false(result);
@@ -86,7 +86,7 @@ tap.test('.check() - No alter to default object  - should return "false"', (t) =
 });
 
 tap.test('.check() - trip and check less then "max" before reset  - should return "false" and keep state "closed"', (t) => {
-    const breaker = new Breaker();
+    const breaker = new Breaker('circuit-b.local');
 
     let result = breaker.check();
     t.equal(breaker.state, 'CLOSED');
@@ -125,7 +125,7 @@ tap.test('.check() - trip and check less then "max" before reset  - should retur
 });
 
 tap.test('.check() - trip and check more then "max" before reset  - should return "true" and switch state to "open"', (t) => {
-    const breaker = new Breaker();
+    const breaker = new Breaker('circuit-b.local');
 
     let result = breaker.check();
     t.equal(breaker.state, 'CLOSED');
@@ -187,7 +187,7 @@ tap.test('.check() - "maxTreshold" is reached - should return "false" on first c
     const clock = lolex.install();
     clock.tick();
 
-    const breaker = new Breaker();
+    const breaker = new Breaker('circuit-b.local');
 
     let result = breaker.check();
     breaker.trip();
