@@ -21,8 +21,21 @@ tap.test('Breaker() - no "maxFailures" argument set - should set default "maxFai
 });
 
 tap.test('Breaker() - "maxFailures" argument set - should set "maxFailures" to value', (t) => {
-    const breaker = new Breaker('circuit-b.local', 10);
+    const breaker = new Breaker('circuit-b.local', { maxFailures: 10 });
     t.equal(breaker.maxFailures, 10);
+    t.end();
+});
+
+
+tap.test('Breaker() - no "maxAge" argument set - should set default "maxAge" to 5000', (t) => {
+    const breaker = new Breaker('circuit-b.local');
+    t.equal(breaker.maxAge, 5000);
+    t.end();
+});
+
+tap.test('Breaker() - "maxAge" argument set - should set "maxAge" to value', (t) => {
+    const breaker = new Breaker('circuit-b.local', { maxAge: 10000 });
+    t.equal(breaker.maxAge, 10000);
     t.end();
 });
 

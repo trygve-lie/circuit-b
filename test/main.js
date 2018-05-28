@@ -2,12 +2,29 @@
 
 const CircuitB = require('../');
 const hostile = require('hostile');
+const lolex = require('lolex');
 const http = require('http');
 const tap = require('tap');
 
-const mockServer = () => {
+const mockServer = (failAt = 3, healAt = 10, type = 'code') => {
     return new Promise((resolve, reject) => {
+        let counter = 0;
         const server = http.createServer((req, res) => {
+            counter += 1;
+            if (counter >= failAt && counter <= healAt) {
+                if (type === 'code') {
+                    res.writeHead(500, { 'Content-Type': 'text/plain' });
+                    res.end('Internal Error');
+                }
+                if (type === 'timeout') {
+                    setTimeout(() => {
+                        res.writeHead(200, { 'Content-Type': 'text/plain' });
+                        res.end('OK');
+                    }, 1000);
+                }
+                return;
+            }
+
             res.writeHead(200, { 'Content-Type': 'text/plain' });
             res.end('OK');
         }).listen(() => {
@@ -66,20 +83,25 @@ tap.test('CircuitB() - foo - bar', async (t) => {
     const server = await mockServer();
     const address = server.address();
 
+    cb.set('circuit-b.local', { maxFailures: 4 });
     cb.enable();
 
-//    const data = await request(address);
-    console.log('a');
-
-    // cb.disable();
-
-
-//    const d = await request(address);
-    console.log('b');
-
+    const a = await request(`http://circuit-b.local:${address.port}`);
+    console.log('a', a);
+    const b = await request(`http://circuit-b.local:${address.port}`);
+    console.log('b', b);
+    const c = await request(`http://circuit-b.local:${address.port}`);
+    console.log('c', c);
+    const d = await request(`http://circuit-b.local:${address.port}`);
+    console.log('d', d);
     const e = await request(`http://circuit-b.local:${address.port}`);
     console.log('e', e);
-
+    const f = await request(`http://circuit-b.local:${address.port}`);
+    console.log('f', f);
+    const g = await request(`http://circuit-b.local:${address.port}`);
+    console.log('g', g);
+    const h = await request(`http://circuit-b.local:${address.port}`);
+    console.log('h', h);
 
     server.close(() => {
         t.end();
