@@ -73,9 +73,9 @@ The Circuit-b instance have the following API:
 ### .set(host, options)
 
 
-
 ### .del(host)
 
+To be implemented
 
 
 ### .enable()
@@ -87,6 +87,51 @@ which does the interception.
 
 Disables the breaker from intercept http calls. Under the hood this disables the async
 hook which does the interception.
+
+### .metrics()
+
+To be implemented
+
+
+## Events
+
+This module emits the following events:
+
+### close
+
+Emitted when the breaker switches a host to closed state. Callback function is emitted
+with `host` as the first argument.
+
+```js
+const breaker = new Breaker();
+breaker.on('close', (host) => {
+    console.log(host, 'switched to close state');
+});
+```
+
+### open
+
+Emitted when the breaker switches a host to open state. Callback function is emitted
+with `host` as the first argument.
+
+```js
+const breaker = new Breaker();
+breaker.on('open', (host) => {
+    console.log(host, 'switched to open state');
+});
+```
+
+### half_open
+
+Emitted when the breaker switches a host to half open state. Callback function is emitted
+with `host` as the first argument.
+
+```js
+const breaker = new Breaker();
+breaker.on('half_open', (host) => {
+    console.log(host, 'switched to half open state');
+});
+```
 
 
 ## License
