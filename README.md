@@ -29,7 +29,12 @@ breaker.enable();
 
 ## Description
 
-This is a non intrusive circuit breaker for node.js. It follow the [circuit breaker pattern](https://doc.akka.io/docs/akka/snapshot/common/circuitbreaker.html)
+A circuit breaker provides latency and fault protection for distributed systems. A circuit
+breaker monitor your outgoing requests, and will trip an internal circuit if it begins to
+detect that the remote service is failing. This allows you to redirect requests to sane
+fallbacks, and back-off the downstream services so they can recover.
+
+This is a non intrusive circuit breaker for node.js and it follow the [circuit breaker pattern](https://doc.akka.io/docs/akka/snapshot/common/circuitbreaker.html)
 defined in the akka documentation as closely as possible.
 
 Circuit-b is non intrusive in the way that one do not need to implement it every single place
