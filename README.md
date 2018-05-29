@@ -26,7 +26,7 @@ breaker.set('api.elsewhere.net');
 breaker.enable();
 
 // Do http requests with any http lib. The breaker will guard it.
-request('api.somewhere.com', (error, response, body) => {
+request('http://api.somewhere.com', (error, response, body) => {
     console.log(body);
 });
 ```
@@ -150,6 +150,84 @@ breaker.on('half_open', (host) => {
     console.log(host, 'switched to half open state');
 });
 ```
+
+
+## Timeouts
+
+One aspect of monitoring health status of a downstream service is timeouts of the http
+calls to the service.
+
+Since circuit-b is non intrusive it does use the timeout of the http request to detect
+timeouts. It does not, as multiple other circuit breakers, add a second timeout detection
+feature on top of the existing http library. In other words; timeouts are controlled by
+setting the timeout on the http client in use.
+
+Its also important to remember that many http libraries / and the default http timeout
+in node.js are rather high. Its recommended to tune this.
+
+```js
+const request = require('request');
+const Breaker = require('circuit-b');
+
+const breaker = new Breaker();
+
+breaker.set('api.somewhere.com');
+breaker.set('api.elsewhere.net');
+
+breaker.enable();
+
+// Will timeout after 5 seconds, and trigger breaker
+request({
+        url: 'http://api.somewhere.com'
+        timeout: 5000
+    }, (error, response, body) => {
+        console.log(body);
+});
+
+// Will timeout after 10 seconds, and trigger breaker
+request({
+        url: 'http://api.elsewhere.net'
+        timeout: 5000
+    }, (error, response, body) => {
+        console.log(body);
+});
+```
+
+
+## Error handling when circuit breaking
+
+When the circuit breaker are in open state (iow; when the downstream service have issues)
+http requests will be terminated with a `CircuitBreakerOpenException` error object.
+
+This error object can be used to choose what one do when a downstream service is
+circuit broken.
+
+```js
+const request = require('request');
+const Breaker = require('circuit-b');
+
+const breaker = new Breaker();
+
+breaker.set('api.somewhere.com');
+
+breaker.enable();
+
+request({
+        url: 'http://api.somewhere.com'
+        timeout: 5000
+    }, (error, response, body) => {
+        if (error) {
+            if (error.type === 'CircuitBreakerOpenException') {
+                console.log('Downstream service is curcuit broken');
+            } else {
+                console.log('Something went humpty dumpty');
+            }
+            return;
+        }
+        console.log(body);
+});
+```
+
 
 
 ## License

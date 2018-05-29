@@ -1,6 +1,6 @@
 {
   "name": "circuit-b",
-  "version": "1.0.0",
+  "version": "1.0.0-beta.1",
   "description": "A non intrusive circuit breaker",
   "main": "lib/main.js",
   "directories": {
@@ -8,6 +8,14 @@
   },
   "author": "Trygve Lie",
   "license": "MIT",
+  "keywords": [
+    "circuit",
+    "breaker",
+    "circuit-breaker",
+    "circuitbreaker",
+    "distributed",
+    "scalability"
+  ],
   "scripts": {
     "bench": "node benchmark/cache.js",
     "test": "tap test/*.js",
@@ -19,8 +27,8 @@
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.12.0",
-    "hostile": "~1.3.1",
-    "lolex": "^2.6.0",
+    "hostile": "~1.3.2",
+    "lolex": "^2.7.0",
     "tap": "^12.0.1"
   }
 }
