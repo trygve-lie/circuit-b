@@ -178,7 +178,7 @@ breaker.enable();
 
 // Will timeout after 5 seconds, and trigger breaker
 request({
-        url: 'http://api.somewhere.com'
+        uri: 'http://api.somewhere.com',
         timeout: 5000
     }, (error, response, body) => {
         console.log(body);
@@ -186,7 +186,7 @@ request({
 
 // Will timeout after 10 seconds, and trigger breaker
 request({
-        url: 'http://api.elsewhere.net'
+        uri: 'http://api.elsewhere.net',
         timeout: 5000
     }, (error, response, body) => {
         console.log(body);
@@ -213,7 +213,7 @@ breaker.set('api.somewhere.com');
 breaker.enable();
 
 request({
-        url: 'http://api.somewhere.com'
+        uri: 'http://api.somewhere.com',
         timeout: 5000
     }, (error, response, body) => {
         if (error) {
