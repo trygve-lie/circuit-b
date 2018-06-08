@@ -48,7 +48,6 @@ const request = (address) => {
             res.on('end', () => {
                 resolve(data);
             });
-
         }).on('error', (error) => {
             reject(error);
         });
