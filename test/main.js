@@ -14,19 +14,19 @@ const mockServer = (failAt = 3, healAt = 10, type = 'code') => {
             if (counter >= failAt && counter <= healAt) {
                 if (type === 'code') {
                     res.writeHead(500, { 'Content-Type': 'text/plain' });
-                    res.end('Internal Error');
+                    res.end('error');
                 }
                 if (type === 'timeout') {
                     setTimeout(() => {
                         res.writeHead(200, { 'Content-Type': 'text/plain' });
-                        res.end('OK');
+                        res.end('ok');
                     }, 1000);
                 }
                 return;
             }
 
             res.writeHead(200, { 'Content-Type': 'text/plain' });
-            res.end('OK');
+            res.end('ok');
         }).listen(() => {
             resolve(server);
         });
@@ -37,7 +37,7 @@ const request = (address) => {
     return new Promise((resolve, reject) => {
         http.get(address, (res) => {
             if (res.statusCode !== 200) {
-                resolve(null);
+                reject(new Error('Status error'));
             }
 
             let data = '';
@@ -48,13 +48,12 @@ const request = (address) => {
             res.on('end', () => {
                 resolve(data);
             });
+
         }).on('error', (error) => {
-            console.log('error', error);
-            resolve(error);
+            reject(error);
         });
     });
 };
-
 
 
 tap.test('setup', (t) => {
@@ -82,32 +81,25 @@ tap.test('CircuitB() - foo - bar', async (t) => {
     const cb = new CircuitB();
     const server = await mockServer();
     const address = server.address();
+    const result = [];
 
     cb.set('circuit-b.local', { maxFailures: 4 });
     cb.enable();
 
-    const a = await request(`http://circuit-b.local:${address.port}`);
-    console.log('a', a);
-    const b = await request(`http://circuit-b.local:${address.port}`);
-    console.log('b', b);
-    const c = await request(`http://circuit-b.local:${address.port}`);
-    console.log('c', c);
-    const d = await request(`http://circuit-b.local:${address.port}`);
-    console.log('d', d);
-    const e = await request(`http://circuit-b.local:${address.port}`);
-    console.log('e', e);
-    const f = await request(`http://circuit-b.local:${address.port}`);
-    console.log('f', f);
-    const g = await request(`http://circuit-b.local:${address.port}`);
-    console.log('g', g);
-    const h = await request(`http://circuit-b.local:${address.port}`);
-    console.log('h', h);
+    await t.resolveMatch(request(`http://circuit-b.local:${address.port}`), 'ok');
+    await t.resolveMatch(request(`http://circuit-b.local:${address.port}`), 'ok');
+
+    await t.rejects(request(`http://circuit-b.local:${address.port}`), new Error('Status error'));
+    await t.rejects(request(`http://circuit-b.local:${address.port}`), new Error('Status error'));
+    await t.rejects(request(`http://circuit-b.local:${address.port}`), new Error('Status error'));
+    await t.rejects(request(`http://circuit-b.local:${address.port}`), new Error('Status error'));
+
+    await t.rejects(request(`http://circuit-b.local:${address.port}`), new Error('CircuitBreakerOpenException'));
+    await t.rejects(request(`http://circuit-b.local:${address.port}`), new Error('CircuitBreakerOpenException'));
 
     server.close(() => {
         t.end();
     });
-
-    //    t.equal(Object.prototype.toString.call(cb), '[object CircuitB]');
 });
 
 tap.test('teardown', (t) => {

@@ -187,7 +187,7 @@ request({
 // Will timeout after 10 seconds, and trigger breaker
 request({
         uri: 'http://api.elsewhere.net',
-        timeout: 5000
+        timeout: 10000
     }, (error, response, body) => {
         console.log(body);
 });
