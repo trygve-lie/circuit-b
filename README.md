@@ -38,18 +38,21 @@ A circuit breaker provides latency and fault protection for distributed systems.
 breaker monitor outgoing requests, and will trip an internal circuit if it begins to detect
 that the remote service is failing. By doing so, one can redirect requests to sane fallbacks,
 and back-off requests against downstream services so they can recover. This pattern is
-described in detail in the [akka documentation](https://doc.akka.io/docs/akka/snapshot/common/circuitbreaker.html).
+described in detail in the [akka documentation](https://doc.akka.io/docs/akka/current/common/circuitbreaker.html).
 
 Circuit-b is non intrusive in the way that one do not need to implement it every single place
-one do a http call in an app. One only need to init Circuit-b one place in an application and
-it will intercept all http calls in this app. When that is said; one can init Circuit-b
-multiple times if wanted.
+one do a http call in an application. One only need to init Circuit-b one place in an application
+and it will intercept all http calls. When that is said; one can init Circuit-b multiple times if
+wanted.
 
-Under the hood Circuit-b use async hooks to intercept http calls so there is no altering of
-the global http object in node or any global singletons.
+Under the hood Circuit-b use async hooks to intercept http calls on the net socket level so there
+is no altering of the global http object in node or any global singletons.
 
 By using this approach there is a clear separation between the code doing http calls and the
 code doing circuit breaking.
+
+Since interaction happen on the net socket, Circuit-b should work out of the box with any node.js
+http library. In theory.
 
 
 ## Constructor
@@ -65,8 +68,8 @@ const breaker = new Breaker(options);
 
 An Object containing misc configuration. The following values can be provided:
 
- * maxFailures - `Number` - Default number of failures which should occur before the breaker switch into open state. Default: 5.
- * maxAge - `Number` - Default time in milliseconds from the breaker entered open state until it enters half open state. Default: 5000ms.
+ * maxFailures - `Number` - Default number of failures which should occur before the breaker switch into open state. Can be overrided by each host. Default: 5.
+ * maxAge - `Number` - Default time in milliseconds from the breaker entered open state until it enters half open state. Can be overrided by each host. Default: 5000ms.
 
 
 ## API
@@ -157,10 +160,9 @@ breaker.on('half_open', (host) => {
 One aspect of monitoring health status of a downstream service is timeouts of the http
 calls to the service.
 
-Since circuit-b is non intrusive it does use the timeout of the http request to detect
-timeouts. It does not, as multiple other circuit breakers, add a second timeout detection
-feature on top of the existing http library. In other words; timeouts are controlled by
-setting the timeout on the http client in use.
+Since circuit-b is non intrusive it does ***not*** time requests by itself to detect
+timeouts  but rely on detecting timeout errors on the socket of each host it tracks.
+In other words; timeouts is controlled by setting the timeout on the http client in use.
 
 Its also important to remember that many http libraries / and the default http timeout
 in node.js are rather high. Its recommended to tune this.
