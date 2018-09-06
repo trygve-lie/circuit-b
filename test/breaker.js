@@ -1,8 +1,8 @@
 'use strict';
 
-const Breaker = require('../lib/breaker');
 const lolex = require('lolex');
 const tap = require('tap');
+const Breaker = require('../lib/breaker');
 
 /**
  * Constructor

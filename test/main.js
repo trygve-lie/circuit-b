@@ -1,10 +1,11 @@
 'use strict';
 
-const CircuitB = require('../');
 const hostile = require('hostile');
 const lolex = require('lolex');
 const http = require('http');
 const tap = require('tap');
+const CircuitB = require('../');
+const BreakerError = require('../lib/error');
 
 const mockServer = (failAt = 3, healAt = 10, type = 'code') => {
     return new Promise((resolve, reject) => {
@@ -93,8 +94,8 @@ tap.test('CircuitB() - foo - bar', async (t) => {
     await t.rejects(request(`http://circuit-b.local:${address.port}`), new Error('Status error'));
     await t.rejects(request(`http://circuit-b.local:${address.port}`), new Error('Status error'));
 
-    await t.rejects(request(`http://circuit-b.local:${address.port}`), new Error('CircuitBreakerOpenException'));
-    await t.rejects(request(`http://circuit-b.local:${address.port}`), new Error('CircuitBreakerOpenException'));
+    await t.rejects(request(`http://circuit-b.local:${address.port}`), new BreakerError('Circuit breaker is open for host: circuit-b.local'));
+    await t.rejects(request(`http://circuit-b.local:${address.port}`), new BreakerError('Circuit breaker is open for host: circuit-b.local'));
 
     server.close(() => {
         t.end();
