@@ -1,11 +1,11 @@
 'use strict';
 
+const BreakerError = require('../lib/error');
+const CircuitB = require('../');
 const hostile = require('hostile');
 const lolex = require('lolex');
 const http = require('http');
 const tap = require('tap');
-const CircuitB = require('../');
-const BreakerError = require('../lib/error');
 
 const mockServer = (failAt = 3, healAt = 10, type = 'code') => {
     return new Promise((resolve, reject) => {
@@ -73,6 +73,54 @@ tap.test('setup', (t) => {
 tap.test('CircuitB() - object type - should be CircuitB', (t) => {
     const cb = new CircuitB();
     t.equal(Object.prototype.toString.call(cb), '[object CircuitB]');
+    t.end();
+});
+
+tap.test('CircuitB() - "maxFailures" argument is not a number - should throw', (t) => {
+    t.throws(() => {
+        const cb = new CircuitB({ maxFailures: 'foo' });
+    }, new Error('Provided value, foo, to argument "maxFailures" is not a number'));
+
+    t.end();
+});
+
+tap.test('CircuitB() - "maxAge" argument is not a number - should throw', (t) => {
+    t.throws(() => {
+        const cb = new CircuitB({ maxAge: 'foo' });
+    }, new Error('Provided value, foo, to argument "maxAge" is not a number'));
+
+    t.end();
+});
+
+
+/**
+ * .set()
+ */
+
+tap.test('.set() - "host" argument is not set - should throw', (t) => {
+    t.throws(() => {
+        const cb = new CircuitB();
+        cb.set();
+    }, new Error('The argument "host" must be provided'));
+
+    t.end();
+});
+
+tap.test('.set() - "maxFailures" argument is not a number - should throw', (t) => {
+    t.throws(() => {
+        const cb = new CircuitB();
+        cb.set('circuit-b.local', { maxFailures: 'foo' });
+    }, new Error('Provided value, foo, to argument "maxFailures" is not a number'));
+
+    t.end();
+});
+
+tap.test('.set() - "maxAge" argument is not a number - should throw', (t) => {
+    t.throws(() => {
+        const cb = new CircuitB();
+        cb.set('circuit-b.local', { maxAge: 'foo' });
+    }, new Error('Provided value, foo, to argument "maxAge" is not a number'));
+
     t.end();
 });
 
