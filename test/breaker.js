@@ -1,8 +1,8 @@
 'use strict';
 
+const Breaker = require('../lib/breaker');
 const lolex = require('lolex');
 const tap = require('tap');
-const Breaker = require('../lib/breaker');
 
 /**
  * Constructor
@@ -26,7 +26,6 @@ tap.test('Breaker() - "maxFailures" argument set - should set "maxFailures" to v
     t.end();
 });
 
-
 tap.test('Breaker() - no "maxAge" argument set - should set default "maxAge" to 5000', (t) => {
     const breaker = new Breaker('circuit-b.local');
     t.equal(breaker.maxAge, 5000);
@@ -36,6 +35,30 @@ tap.test('Breaker() - no "maxAge" argument set - should set default "maxAge" to 
 tap.test('Breaker() - "maxAge" argument set - should set "maxAge" to value', (t) => {
     const breaker = new Breaker('circuit-b.local', { maxAge: 10000 });
     t.equal(breaker.maxAge, 10000);
+    t.end();
+});
+
+tap.test('Breaker() - "host" argument is not set - should throw', (t) => {
+    t.throws(() => {
+        const breaker = new Breaker();
+    }, new Error('The argument "host" must be provided'));
+
+    t.end();
+});
+
+tap.test('Breaker() - "maxFailures" argument is not a number - should throw', (t) => {
+    t.throws(() => {
+        const breaker = new Breaker('circuit-b.local', { maxFailures: 'foo' });
+    }, new Error('Provided value, foo, to argument "maxFailures" is not a number'));
+
+    t.end();
+});
+
+tap.test('Breaker() - "maxAge" argument is not a number - should throw', (t) => {
+    t.throws(() => {
+        const breaker = new Breaker('circuit-b.local', { maxAge: 'foo' });
+    }, new Error('Provided value, foo, to argument "maxAge" is not a number'));
+
     t.end();
 });
 
@@ -194,7 +217,6 @@ tap.test('.check() - trip and check more then "max" before reset  - should retur
 
     t.end();
 });
-
 
 tap.test('.check() - "maxTreshold" is reached - should return "false" on first check, "true" on second check', (t) => {
     const clock = lolex.install();
