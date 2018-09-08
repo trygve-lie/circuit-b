@@ -4,13 +4,15 @@ const { before, after } = require('./integration/utils');
 const test = require('tape');
 
 const timeout = require('./integration/timeout');
+const http400 = require('./integration/http-status-400');
+const http500 = require('./integration/http-status-500');
 
 test('before', async (t) => {
     await before();
     t.end();
 });
 
-test('timing test', async (t) => {
+test('integration - timeouts', async (t) => {
     const result = await timeout();
     t.deepEqual(result, [
         'ok',
@@ -22,6 +24,50 @@ test('timing test', async (t) => {
         'circuit breaking',
         'circuit breaking',
         'timeout',
+        'circuit breaking',
+        'circuit breaking',
+        'circuit breaking',
+        'circuit breaking',
+        'ok',
+        'ok'
+    ]);
+    t.end();
+});
+
+test('integration - http status 400 errors', async (t) => {
+    const result = await http400();
+    t.deepEqual(result, [
+        'ok',
+        'ok',
+        'http error',
+        'http error',
+        'http error',
+        'http error',
+        'circuit breaking',
+        'circuit breaking',
+        'http error',
+        'circuit breaking',
+        'circuit breaking',
+        'circuit breaking',
+        'circuit breaking',
+        'ok',
+        'ok'
+    ]);
+    t.end();
+});
+
+test('integration - http status 500 errors', async (t) => {
+    const result = await http500();
+    t.deepEqual(result, [
+        'ok',
+        'ok',
+        'http error',
+        'http error',
+        'http error',
+        'http error',
+        'circuit breaking',
+        'circuit breaking',
+        'http error',
         'circuit breaking',
         'circuit breaking',
         'circuit breaking',
