@@ -5,6 +5,7 @@ const { before, after } = require('./integration/utils');
 const timeout = require('./integration/timeout');
 const http400 = require('./integration/http-status-400');
 const http500 = require('./integration/http-status-500');
+const errorFlight = require('./integration/error-in-flight');
 
 test('before', async (t) => {
     await before();
@@ -67,6 +68,28 @@ test('integration - http status 500 errors', async (t) => {
         'circuit breaking',
         'circuit breaking',
         'http error',
+        'circuit breaking',
+        'circuit breaking',
+        'circuit breaking',
+        'circuit breaking',
+        'ok',
+        'ok'
+    ]);
+    t.end();
+});
+
+test('integration - error', async (t) => {
+    const result = await errorFlight();
+    t.deepEqual(result, [
+        'ok',
+        'ok',
+        'error',
+        'error',
+        'error',
+        'error',
+        'circuit breaking',
+        'circuit breaking',
+        'error',
         'circuit breaking',
         'circuit breaking',
         'circuit breaking',
