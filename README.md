@@ -93,11 +93,21 @@ This method take the following arguments:
  * options.maxFailures - `Number` - Default number of failures which should occur before the breaker switch into open state. Inherits from constructor if unset.
  * options.maxAge - `Number` - Default time in milliseconds from the breaker entered open state until it enters half open state. Inherits from constructor if unset.
 
-
 ### .del(host)
 
-To be implemented
+Removes a host from being guarded by the breaker.
 
+```js
+const breaker = new Breaker();
+
+breaker.del('api.somewhere.com');
+```
+
+This method take the following arguments:
+
+ * host - `String` - The host to remove. Required.
+
+Returns `true` if the host was successfully removed and `false` if not.
 
 ### .enable()
 
