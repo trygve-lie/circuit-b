@@ -18,8 +18,7 @@
   ],
   "scripts": {
     "bench": "node benchmark/cache.js",
-    "test": "tape test/*.js | tap-dot",
-    "test:coverage": "tap test/*.js --cov",
+    "test": "tape test/*.js | tap-summary",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
@@ -29,7 +28,7 @@
     "eslint-plugin-import": "^2.12.0",
     "hostile": "~1.3.2",
     "lolex": "^2.7.0",
-    "tap-dot": "^2.0.0",
+    "tap-summary": "^4.0.0",
     "tape": "^4.9.1"
   }
 }
