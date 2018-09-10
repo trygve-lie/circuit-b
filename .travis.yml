@@ -2,7 +2,7 @@ language: node_js
 
 node_js:
   - '10'
-  - '9'
+  - '10.9'
 
 script:
   - sudo env "PATH=$PATH" npm test
