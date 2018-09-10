@@ -1,7 +1,7 @@
 'use strict';
 
-const CircuitB = require('../');
 const test = require('tape');
+const CircuitB = require('../');
 
 /**
  * Constructor
@@ -16,14 +16,14 @@ test('CircuitB() - object type - should be CircuitB', (t) => {
 test('CircuitB() - "maxFailures" argument is not a number - should throw', (t) => {
     t.plan(1);
     t.throws(() => {
-        const cb = new CircuitB({ maxFailures: 'foo' });
+        const cb = new CircuitB({ maxFailures: 'foo' }); // eslint-disable-line no-unused-vars
     }, /Provided value, foo, to argument "maxFailures" is not a number/);
     t.end();
 });
 
 test('CircuitB() - "maxAge" argument is not a number - should throw', (t) => {
     t.throws(() => {
-        const cb = new CircuitB({ maxAge: 'foo' });
+        const cb = new CircuitB({ maxAge: 'foo' }); // eslint-disable-line no-unused-vars
     }, /Provided value, foo, to argument "maxAge" is not a number/);
 
     t.end();

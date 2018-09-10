@@ -4,7 +4,7 @@ const hostile = require('hostile');
 const http = require('http');
 
 const server = ({ failAt = 3, healAt = 10, type = 'code-500' } = {}) => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         let counter = 0;
         const s = http.createServer((req, res) => {
             counter += 1;
@@ -37,7 +37,7 @@ module.exports.server = server;
 
 
 const request = (options) => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         const req = http.get(options);
 
         req.on('response', (res) => {
@@ -73,7 +73,7 @@ module.exports.request = request;
 
 
 const sleep = (time) => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         setTimeout(() => {
             resolve();
         }, time);
@@ -91,8 +91,8 @@ const before = () => {
             }
             resolve();
         });
-    })
-}
+    });
+};
 module.exports.before = before;
 
 
@@ -105,6 +105,6 @@ const after = () => {
             }
             resolve();
         });
-    })
-}
+    });
+};
 module.exports.after = after;

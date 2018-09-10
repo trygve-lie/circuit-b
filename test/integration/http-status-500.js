@@ -56,6 +56,6 @@ const test = async () => {
 
     cb.disable();
     return result;
-}
+};
 
 module.exports = test;

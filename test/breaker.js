@@ -1,8 +1,8 @@
 'use strict';
 
-const Breaker = require('../lib/breaker');
 const lolex = require('lolex');
 const test = require('tape');
+const Breaker = require('../lib/breaker');
 
 /**
  * Constructor
@@ -40,7 +40,7 @@ test('Breaker() - "maxAge" argument set - should set "maxAge" to value', (t) => 
 
 test('Breaker() - "host" argument is not set - should throw', (t) => {
     t.throws(() => {
-        const breaker = new Breaker();
+        const breaker = new Breaker(); // eslint-disable-line no-unused-vars
     }, new Error('The argument "host" must be provided'));
 
     t.end();
@@ -48,7 +48,7 @@ test('Breaker() - "host" argument is not set - should throw', (t) => {
 
 test('Breaker() - "maxFailures" argument is not a number - should throw', (t) => {
     t.throws(() => {
-        const breaker = new Breaker('circuit-b.local', { maxFailures: 'foo' });
+        const breaker = new Breaker('circuit-b.local', { maxFailures: 'foo' }); // eslint-disable-line no-unused-vars
     }, new Error('Provided value, foo, to argument "maxFailures" is not a number'));
 
     t.end();
@@ -56,7 +56,7 @@ test('Breaker() - "maxFailures" argument is not a number - should throw', (t) =>
 
 test('Breaker() - "maxAge" argument is not a number - should throw', (t) => {
     t.throws(() => {
-        const breaker = new Breaker('circuit-b.local', { maxAge: 'foo' });
+        const breaker = new Breaker('circuit-b.local', { maxAge: 'foo' }); // eslint-disable-line no-unused-vars
     }, new Error('Provided value, foo, to argument "maxAge" is not a number'));
 
     t.end();
