@@ -60,3 +60,23 @@ test('.set() - "maxAge" argument is not a number - should throw', (t) => {
 
     t.end();
 });
+
+
+/**
+ * .del()
+ */
+
+test('.del() - remove existing domain - should return "true"', (t) => {
+    const cb = new CircuitB();
+    cb.set('circuit-b.local');
+    const result = cb.del('circuit-b.local');
+    t.ok(result);
+    t.end();
+});
+
+test('.del() - remove non existing domain - should return "false"', (t) => {
+    const cb = new CircuitB();
+    const result = cb.del('circuit-b.local');
+    t.notOk(result);
+    t.end();
+});
