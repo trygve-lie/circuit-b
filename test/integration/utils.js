@@ -23,6 +23,12 @@ const server = ({ failAt = 3, healAt = 10, type = 'code-500' } = {}) => {
                         res.end('ok');
                     }, 1000);
                 }
+                if (type === 'error') {
+                    res.writeHead(200, { 'Content-Type': 'text/plain' });
+                    setTimeout(() => {
+                        res.socket.destroy(new Error('Problem'));
+                    }, 5);
+                }
                 return;
             }
 
