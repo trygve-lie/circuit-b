@@ -234,8 +234,8 @@ request({
 ## node.js compabillity
 
 This module use [async hooks](https://nodejs.org/api/async_hooks.html) which was first
-introdused in node.js 8.1 This module will not function with older than 8.1 versions
-of node.js. Its recommended to use node.js 10.x or newer.
+introdused in node.js 8.1. Despite that, this module will only work fully with node.js
+version 10.x or newer.
 
 
 ## License
