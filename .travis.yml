@@ -1,11 +1,12 @@
 language: node_js
 
 node_js:
-  - "10"
-  - "8"
+  - '10'
 
 script:
   - sudo env "PATH=$PATH" npm test
+
+sudo: enabled
 
 jobs:
   fast_finish: true
