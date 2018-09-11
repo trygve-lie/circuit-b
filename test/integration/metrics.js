@@ -1,7 +1,9 @@
 'use strict';
 
 const CircuitB = require('../../');
-const { server, request, sleep, destObjectStream } = require('./utils');
+const {
+    server, request, sleep, destObjectStream
+} = require('./utils');
 
 const test = async () => {
     const cb = new CircuitB({ maxAge: 100 });

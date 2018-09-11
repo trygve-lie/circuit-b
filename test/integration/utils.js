@@ -118,10 +118,10 @@ module.exports.after = after;
 
 
 const destObjectStream = class destObjectStream extends stream.Writable {
-    constructor() {
+    constructor(...args) {
         super(Object.assign({
             objectMode: true
-        }, ...arguments))
+        }, args));
 
         this.chunks = [];
     }

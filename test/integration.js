@@ -104,21 +104,21 @@ test('integration - error', async (t) => {
 test('integration - metrics', async (t) => {
     const result = await metrics();
     t.deepEqual(result, [
-        'CLOSED',
-        'CLOSED',
-        'CLOSED',
-        'CLOSED',
-        'CLOSED',
-        'CLOSED',
-        'OPEN',
-        'OPEN',
-        'HALF_OPEN',
-        'OPEN',
-        'OPEN',
-        'OPEN',
-        'OPEN',
-        'HALF_OPEN',
-        'CLOSED'
+        'closed',
+        'closed',
+        'closed',
+        'closed',
+        'closed',
+        'closed',
+        'open',
+        'open',
+        'half_open',
+        'open',
+        'open',
+        'open',
+        'open',
+        'half_open',
+        'closed'
     ]);
     t.end();
 });

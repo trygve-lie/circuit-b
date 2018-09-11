@@ -45,8 +45,9 @@ one do a http call in an application. One only need to init Circuit-b one place 
 and it will intercept all http calls. When that is said; one can init Circuit-b multiple times if
 wanted.
 
-Under the hood Circuit-b use async hooks to intercept http calls on the net socket level so there
-is no altering of the global http object in node or any global singletons.
+Under the hood Circuit-b use [async hooks](https://nodejs.org/api/async_hooks.html) to intercept
+http calls on the net socket level so there is no altering of the global http object in node or
+any global singletons.
 
 By using this approach there is a clear separation between the code doing http calls and the
 code doing circuit breaking.
@@ -119,48 +120,69 @@ which does the interception.
 Disables the breaker from intercept http calls. Under the hood this disables the async
 hook which does the interception.
 
-### .metrics()
+### .metrics
 
-To be implemented
+Attribute which holds a [metrics stream](https://github.com/metrics-js/client) that
+emits metrics data.
+
+The stream will emit an event of the following character for each request the circuit
+breaker intercepts:
+
+```js
+{
+    name: 'circuit-b:state:event',
+    description: 'Circuit breaker state',
+    timestamp: 1536656326.872,
+    value: null,
+    time: null,
+    meta: {
+        state: 'closed',
+        host: 'registered.host.io'
+    }
+}
+```
+
+Please see [@metrics/client](https://github.com/metrics-js/client) for examples
+of consuming these metrics into your favorite monitoring system.
 
 
 ## Events
 
-This module emits the following events:
+For each request the circuit breaker will emit one of the following events:
 
-### close
+### closed
 
-Emitted when the breaker switches a host to closed state. Callback function is emitted
-with `host` as the first argument.
+Emitted when a request encounters the breaker to be in a closed state. Callback function
+is emitted with `host` as the first argument.
 
 ```js
 const breaker = new Breaker();
-breaker.on('close', (host) => {
-    console.log(host, 'switched to close state');
+breaker.on('closed', (host) => {
+    console.log(host, 'closed state');
 });
 ```
 
 ### open
 
-Emitted when the breaker switches a host to open state. Callback function is emitted
-with `host` as the first argument.
+Emitted when a request encounters the breaker to be in a open state. Callback function
+is emitted with `host` as the first argument.
 
 ```js
 const breaker = new Breaker();
 breaker.on('open', (host) => {
-    console.log(host, 'switched to open state');
+    console.log(host, 'open state');
 });
 ```
 
 ### half_open
 
-Emitted when the breaker switches a host to half open state. Callback function is emitted
-with `host` as the first argument.
+Emitted when a request encounters the breaker to be in a half open state. Callback function
+is emitted with `host` as the first argument.
 
 ```js
 const breaker = new Breaker();
 breaker.on('half_open', (host) => {
-    console.log(host, 'switched to half open state');
+    console.log(host, 'half open state');
 });
 ```
 
