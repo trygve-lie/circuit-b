@@ -6,6 +6,7 @@ const timeout = require('./integration/timeout');
 const http400 = require('./integration/http-status-400');
 const http500 = require('./integration/http-status-500');
 const errorFlight = require('./integration/error-in-flight');
+const metrics = require('./integration/metrics');
 
 test('before', async (t) => {
     await before();
@@ -96,6 +97,28 @@ test('integration - error', async (t) => {
         'circuit breaking',
         'ok',
         'ok'
+    ]);
+    t.end();
+});
+
+test('integration - metrics', async (t) => {
+    const result = await metrics();
+    t.deepEqual(result, [
+        'CLOSED',
+        'CLOSED',
+        'CLOSED',
+        'CLOSED',
+        'CLOSED',
+        'CLOSED',
+        'OPEN',
+        'OPEN',
+        'HALF_OPEN',
+        'OPEN',
+        'OPEN',
+        'OPEN',
+        'OPEN',
+        'HALF_OPEN',
+        'CLOSED'
     ]);
     t.end();
 });
