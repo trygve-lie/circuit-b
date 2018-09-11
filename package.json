@@ -6,6 +6,14 @@
   "directories": {
     "lib": "lib"
   },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:trygve-lie/circuit-b.git"
+  },
+  "bugs": {
+    "url": "https://github.com/trygve-lie/circuit-b/issues"
+  },
+  "homepage": "https://github.com/trygve-lie/circuit-b#readme",
   "author": "Trygve Lie",
   "license": "MIT",
   "keywords": [
@@ -17,7 +25,6 @@
     "scalability"
   ],
   "scripts": {
-    "bench": "node benchmark/cache.js",
     "test": "tape test/*.js | tap-summary",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
