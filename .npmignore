@@ -1,6 +1,9 @@
 node_modules
+test
 *.log
 .gitignore
 .npmignore
 .eslintrc
+.eslintignore
 .travis.yml
+.nyc_output
