@@ -30,5 +30,8 @@
     "lolex": "^2.7.0",
     "tap-summary": "^4.0.0",
     "tape": "^4.9.1"
+  },
+  "dependencies": {
+    "@metrics/client": "^1.0.0"
   }
 }

@@ -1,6 +1,7 @@
 'use strict';
 
 const hostile = require('hostile');
+const stream = require('stream');
 const http = require('http');
 
 const server = ({ failAt = 3, healAt = 10, type = 'code-500' } = {}) => {
@@ -114,3 +115,28 @@ const after = () => {
     });
 };
 module.exports.after = after;
+
+
+const destObjectStream = class destObjectStream extends stream.Writable {
+    constructor(...args) {
+        super(Object.assign({
+            objectMode: true
+        }, args));
+
+        this.chunks = [];
+    }
+
+    _write(chunk, encoding, callback) {
+        this.chunks.push(chunk);
+        callback();
+    }
+
+    result() {
+        return new Promise((resolve) => {
+            process.nextTick(() => {
+                resolve(this.chunks);
+            });
+        });
+    }
+};
+module.exports.destObjectStream = destObjectStream;
