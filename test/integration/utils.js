@@ -89,6 +89,15 @@ const sleep = (time) => {
 module.exports.sleep = sleep;
 
 
+const within = (value, min = 0, max = 10) => {
+    if (min < value && value < max) {
+        return true;
+    }
+    return false;
+};
+module.exports.within = within;
+
+
 const before = () => {
     return new Promise((resolve, reject) => {
         hostile.set('127.0.0.1', 'circuit-b.local', (error) => {

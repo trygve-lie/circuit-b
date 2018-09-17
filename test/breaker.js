@@ -1,7 +1,7 @@
 'use strict';
 
-const lolex = require('lolex');
 const test = require('tape');
+const { sleep, within } = require('./integration/utils');
 const Breaker = require('../lib/breaker');
 
 /**
@@ -93,18 +93,15 @@ test('.trip() - breaker is "closed" - reaches max failures - should switch break
 });
 
 test('.trip() - breaker is "closed" - reaches max failures - should set "tripped" to now + waitTreshold', (t) => {
-    const clock = lolex.install();
-    clock.tick(1000);
-
     const breaker = new Breaker('circuit-b.local');
     breaker.trip();
     breaker.trip();
     breaker.trip();
     breaker.trip();
     breaker.trip();
-    t.equal(breaker.tripped, 6000);
 
-    clock.uninstall();
+    const now = Date.now();
+    t.true(within(breaker.tripped - now, 4900, 5100));
     t.end();
 });
 
@@ -218,11 +215,9 @@ test('.check() - trip and check more then "max" before reset  - should return "t
     t.end();
 });
 
-test('.check() - "maxTreshold" is reached - should return "false" on first check, "true" on second check', (t) => {
-    const clock = lolex.install();
-    clock.tick();
-
-    const breaker = new Breaker('circuit-b.local');
+test('.check() - "maxTreshold" is reached - should return "false" on first check, "true" on second check', async (t) => {
+    const breaker = new Breaker('circuit-b.local', { maxAge: 100 });
+    const now = Date.now();
 
     let result = breaker.check();
     breaker.trip();
@@ -233,19 +228,19 @@ test('.check() - "maxTreshold" is reached - should return "false" on first check
 
     result = breaker.check();
     t.equal(breaker.state, 'OPEN');
-    t.equal(breaker.tripped, 5000);
+    t.equal(breaker.tripped - now, 100);
     t.true(result);
 
-    clock.tick(10000);
+    await sleep(120);
 
     result = breaker.check();
     t.equal(breaker.state, 'HALF_OPEN');
-    t.equal(breaker.tripped, 15000);
+    t.true(within(breaker.tripped - now, 214, 226));
     t.false(result);
 
     result = breaker.check();
     t.equal(breaker.state, 'OPEN');
-    t.equal(breaker.tripped, 15000);
+    t.true(within(breaker.tripped - now, 214, 226));
     t.true(result);
 
     breaker.reset();
@@ -256,6 +251,5 @@ test('.check() - "maxTreshold" is reached - should return "false" on first check
     t.equal(breaker.tripped, -1);
     t.false(result);
 
-    clock.uninstall();
     t.end();
 });
