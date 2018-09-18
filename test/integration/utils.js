@@ -3,6 +3,7 @@
 const request = require('request');
 const hostile = require('hostile');
 const stream = require('stream');
+const fetch = require('node-fetch');
 const http = require('http');
 
 const server = ({ failAt = 3, healAt = 10, type = 'code-500' } = {}) => {
@@ -116,6 +117,31 @@ const clientRequest = (options) => {
     });
 };
 module.exports.clientRequest = clientRequest;
+
+
+const clientFetch = (options) => {
+    return new Promise((resolve) => {
+        fetch(`http://${options.host}:${options.port}/`, { timeout: options.timeout })
+            .then(res => {
+                if (res.status !== 200) {
+                    resolve('http error');
+                } else {
+                    resolve(res.text());
+                }
+            })
+            .catch(error => {
+                if (error.code === 'CircuitBreakerOpenException') {
+                    resolve('circuit breaking');
+                } else if (error.type === 'request-timeout') {
+                    resolve('timeout');
+                } else {
+                    resolve('error');
+                }
+            });
+    });
+};
+module.exports.clientFetch = clientFetch;
+
 
 
 const sleep = (time) => {

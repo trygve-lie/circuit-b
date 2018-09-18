@@ -2,7 +2,7 @@
 
 const test = require('tape');
 const {
-    before, clientHttp, clientRequest, after
+    before, clientHttp, clientRequest, clientFetch, after
 } = require('./integration/utils');
 const timeout = require('./integration/timeout');
 const http400 = require('./integration/http-status-400');
@@ -157,7 +157,6 @@ test('integration - request.js - http status 400 errors', async (t) => {
     t.end();
 });
 
-
 test('integration - request.js - http status 500 errors', async (t) => {
     const result = await http500(clientRequest);
     t.deepEqual(result, [
@@ -204,6 +203,101 @@ test('integration - request.js - error', async (t) => {
 
 
 /**
+ * node-fetch
+ */
+
+/*
+test('integration - node-fetch - timeouts', async (t) => {
+    const result = await timeout(clientFetch);
+    t.deepEqual(result, [
+        'ok',
+        'ok',
+        'timeout',
+        'timeout',
+        'timeout',
+        'timeout',
+        'circuit breaking',
+        'circuit breaking',
+        'timeout',
+        'circuit breaking',
+        'circuit breaking',
+        'circuit breaking',
+        'circuit breaking',
+        'ok',
+        'ok'
+    ]);
+    t.end();
+});
+*/
+
+test('integration - node-fetch - http status 400 errors', async (t) => {
+    const result = await http400(clientFetch);
+    t.deepEqual(result, [
+        'ok',
+        'ok',
+        'http error',
+        'http error',
+        'http error',
+        'http error',
+        'circuit breaking',
+        'circuit breaking',
+        'http error',
+        'circuit breaking',
+        'circuit breaking',
+        'circuit breaking',
+        'circuit breaking',
+        'ok',
+        'ok'
+    ]);
+    t.end();
+});
+
+test('integration - node-fetch - http status 500 errors', async (t) => {
+    const result = await http500(clientFetch);
+    t.deepEqual(result, [
+        'ok',
+        'ok',
+        'http error',
+        'http error',
+        'http error',
+        'http error',
+        'circuit breaking',
+        'circuit breaking',
+        'http error',
+        'circuit breaking',
+        'circuit breaking',
+        'circuit breaking',
+        'circuit breaking',
+        'ok',
+        'ok'
+    ]);
+    t.end();
+});
+
+test('integration - node-fetch - error', async (t) => {
+    const result = await errorFlight(clientFetch);
+    t.deepEqual(result, [
+        'ok',
+        'ok',
+        'error',
+        'error',
+        'error',
+        'error',
+        'circuit breaking',
+        'circuit breaking',
+        'error',
+        'circuit breaking',
+        'circuit breaking',
+        'circuit breaking',
+        'circuit breaking',
+        'ok',
+        'ok'
+    ]);
+    t.end();
+});
+
+
+/**
  * Metrics
  */
 
@@ -228,7 +322,6 @@ test('integration - metrics', async (t) => {
     ]);
     t.end();
 });
-
 
 
 test('after', async (t) => {
