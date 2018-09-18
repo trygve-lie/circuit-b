@@ -1,5 +1,6 @@
 'use strict';
 
+const request = require('request');
 const hostile = require('hostile');
 const stream = require('stream');
 const http = require('http');
@@ -43,7 +44,7 @@ const server = ({ failAt = 3, healAt = 10, type = 'code-500' } = {}) => {
 module.exports.server = server;
 
 
-const request = (options) => {
+const clientHttp = (options) => {
     return new Promise((resolve) => {
         const req = http.get(options);
 
@@ -76,7 +77,45 @@ const request = (options) => {
         });
     });
 };
-module.exports.request = request;
+module.exports.clientHttp = clientHttp;
+
+
+const clientRequest = (options) => {
+    return new Promise((resolve) => {
+        const opts = {
+            method: 'GET',
+            timeout: options.timeout,
+            url: `http://${options.host}:${options.port}/`,
+        };
+        const req = request(opts);
+
+        req.on('response', (res) => {
+            if (res.statusCode !== 200) {
+                resolve('http error');
+            }
+
+            let data = '';
+            res.on('data', (chunk) => {
+                data += chunk;
+            });
+
+            res.on('end', () => {
+                resolve(data);
+            });
+        });
+
+        req.on('error', (error) => {
+            if (error.name === 'CircuitBreakerOpenException') {
+                resolve('circuit breaking');
+            } else if (error.code === 'ESOCKETTIMEDOUT') {
+                resolve('timeout');
+            } else {
+                resolve('error');
+            }
+        });
+    });
+};
+module.exports.clientRequest = clientRequest;
 
 
 const sleep = (time) => {
