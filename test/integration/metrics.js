@@ -2,7 +2,7 @@
 
 const CircuitB = require('../../');
 const {
-    server, request, sleep, destObjectStream
+    server, clientHttp, sleep, destObjectStream
 } = require('./utils');
 
 const test = async () => {
@@ -23,37 +23,37 @@ const test = async () => {
     };
 
     // two ok responses, server fails at third request. total 2 request to server
-    await request(options);
-    await request(options);
+    await clientHttp(options);
+    await clientHttp(options);
 
     // four error responses, server failed at third request. total 6 request to server
-    await request(options);
-    await request(options);
-    await request(options);
-    await request(options);
+    await clientHttp(options);
+    await clientHttp(options);
+    await clientHttp(options);
+    await clientHttp(options);
 
     // circuit breaker is now terminating requests to server
-    await request(options);
-    await request(options);
+    await clientHttp(options);
+    await clientHttp(options);
 
     // exceed max time for circuit breaker. let one request to server through
     await sleep(120);
 
     // one error responses. total 7 request to server
-    await request(options);
+    await clientHttp(options);
 
     // circuit breaker is now terminating requests to server
-    await request(options);
-    await request(options);
-    await request(options);
-    await request(options);
+    await clientHttp(options);
+    await clientHttp(options);
+    await clientHttp(options);
+    await clientHttp(options);
 
     // exceed max time for circuit breaker. let one request to server through
     await sleep(120);
 
     // server is healty. circuit breaker should not interfere
-    await request(options);
-    await request(options);
+    await clientHttp(options);
+    await clientHttp(options);
 
     await s.close();
 
