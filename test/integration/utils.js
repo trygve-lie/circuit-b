@@ -65,7 +65,7 @@ const clientHttp = (options) => {
         });
 
         req.on('error', (error) => {
-            if (error.name === 'CircuitBreakerOpenException') {
+            if (error.code === 'CircuitBreakerOpenException') {
                 resolve('circuit breaking');
             } else {
                 resolve('error');
@@ -106,7 +106,7 @@ const clientRequest = (options) => {
         });
 
         req.on('error', (error) => {
-            if (error.name === 'CircuitBreakerOpenException') {
+            if (error.code === 'CircuitBreakerOpenException') {
                 resolve('circuit breaking');
             } else if (error.code === 'ESOCKETTIMEDOUT') {
                 resolve('timeout');

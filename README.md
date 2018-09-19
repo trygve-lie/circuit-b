@@ -253,7 +253,7 @@ request({
         timeout: 5000
     }, (error, response, body) => {
         if (error) {
-            if (error.name === 'CircuitBreakerOpenException') {
+            if (error.code === 'CircuitBreakerOpenException') {
                 console.log('Downstream service is curcuit broken');
             } else {
                 console.log('Something went humpty dumpty');
