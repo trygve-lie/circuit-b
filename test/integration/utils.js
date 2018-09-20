@@ -67,6 +67,8 @@ const clientHttp = (options) => {
         req.on('error', (error) => {
             if (error.code === 'CircuitBreakerOpenException') {
                 resolve('circuit breaking');
+            } else if (error.code === 'CircuitBreakerTimeout') {
+                resolve('timeout');
             } else {
                 resolve('error');
             }
@@ -108,6 +110,8 @@ const clientRequest = (options) => {
         req.on('error', (error) => {
             if (error.code === 'CircuitBreakerOpenException') {
                 resolve('circuit breaking');
+            } else if (error.code === 'CircuitBreakerTimeout') {
+                resolve('timeout');
             } else if (error.code === 'ESOCKETTIMEDOUT') {
                 resolve('timeout');
             } else {
@@ -121,17 +125,19 @@ module.exports.clientRequest = clientRequest;
 
 const clientFetch = (options) => {
     return new Promise((resolve) => {
-        fetch(`http://${options.host}:${options.port}/`, { timeout: options.timeout })
-            .then(res => {
+        fetch(`http://${options.host}:${options.port}/`)
+            .then((res) => {
                 if (res.status !== 200) {
                     resolve('http error');
                 } else {
                     resolve(res.text());
                 }
             })
-            .catch(error => {
+            .catch((error) => {
                 if (error.code === 'CircuitBreakerOpenException') {
                     resolve('circuit breaking');
+                } else if (error.code === 'CircuitBreakerTimeout') {
+                    resolve('timeout');
                 } else if (error.type === 'request-timeout') {
                     resolve('timeout');
                 } else {
