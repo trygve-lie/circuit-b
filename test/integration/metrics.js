@@ -6,7 +6,7 @@ const {
 } = require('./utils');
 
 const test = async () => {
-    const cb = new CircuitB({ maxAge: 100 });
+    const cb = new CircuitB({ maxAge: 200, timeout: 100 });
     const s = await server({ type: 'code-500', healAt: 7 });
     const address = s.address();
 
@@ -17,7 +17,6 @@ const test = async () => {
     cb.enable();
 
     const options = {
-        timeout: 20,
         host: 'circuit-b.local',
         port: address.port,
     };
@@ -37,7 +36,7 @@ const test = async () => {
     await clientHttp(options);
 
     // exceed max time for circuit breaker. let one request to server through
-    await sleep(120);
+    await sleep(220);
 
     // one error responses. total 7 request to server
     await clientHttp(options);
@@ -49,7 +48,7 @@ const test = async () => {
     await clientHttp(options);
 
     // exceed max time for circuit breaker. let one request to server through
-    await sleep(120);
+    await sleep(220);
 
     // server is healty. circuit breaker should not interfere
     await clientHttp(options);

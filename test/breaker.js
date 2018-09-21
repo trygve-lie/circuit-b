@@ -38,11 +38,22 @@ test('Breaker() - "maxAge" argument set - should set "maxAge" to value', (t) => 
     t.end();
 });
 
+test('Breaker() - no "timeout" argument set - should set default "timeout" to 20000', (t) => {
+    const breaker = new Breaker('circuit-b.local');
+    t.equal(breaker.timeout, 20000);
+    t.end();
+});
+
+test('Breaker() - "timeout" argument set - should set "timeout" to value', (t) => {
+    const breaker = new Breaker('circuit-b.local', { timeout: 10000 });
+    t.equal(breaker.timeout, 10000);
+    t.end();
+});
+
 test('Breaker() - "host" argument is not set - should throw', (t) => {
     t.throws(() => {
         const breaker = new Breaker(); // eslint-disable-line no-unused-vars
     }, new Error('The argument "host" must be provided'));
-
     t.end();
 });
 
@@ -50,7 +61,6 @@ test('Breaker() - "maxFailures" argument is not a number - should throw', (t) =>
     t.throws(() => {
         const breaker = new Breaker('circuit-b.local', { maxFailures: 'foo' }); // eslint-disable-line no-unused-vars
     }, new Error('Provided value, foo, to argument "maxFailures" is not a number'));
-
     t.end();
 });
 
@@ -58,7 +68,13 @@ test('Breaker() - "maxAge" argument is not a number - should throw', (t) => {
     t.throws(() => {
         const breaker = new Breaker('circuit-b.local', { maxAge: 'foo' }); // eslint-disable-line no-unused-vars
     }, new Error('Provided value, foo, to argument "maxAge" is not a number'));
+    t.end();
+});
 
+test('Breaker() - "timeout" argument is not a number - should throw', (t) => {
+    t.throws(() => {
+        const breaker = new Breaker('circuit-b.local', { timeout: 'foo' }); // eslint-disable-line no-unused-vars
+    }, new Error('Provided value, foo, to argument "timeout" is not a number'));
     t.end();
 });
 
