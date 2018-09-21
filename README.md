@@ -53,10 +53,16 @@ By using this approach there is a clear separation between the code doing http c
 code doing circuit breaking.
 
 Since interaction happen on the net socket, Circuit-b should, in theory, work out of the box with
-any node.js http library. Circuit-b is currently tested to be working with native node.js
-[http.request()](https://nodejs.org/dist/latest-v10.x/docs/api/http.html#http_http_request_options_callback),
-and [request.js](https://github.com/request/request). [node-fetch](https://github.com/trygve-lie/circuit-b/pull/5)
-and axios is to be included in these tests.
+any node.js http request library. Circuit-b is currently tested to be working with:
+
+ * Native node.js [http.request()](https://nodejs.org/api/http.html#http_http_request_options_callback)
+ * [request.js](https://github.com/request/request)
+ * [node-fetch](https://github.com/bitinn/node-fetch)
+
+The following http request libraries is to be included in these tests (PRs welcome):
+
+ * [axios](https://github.com/axios/axios)
+ * [got](https://github.com/sindresorhus/got)
 
 
 ## Constructor
