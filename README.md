@@ -58,10 +58,10 @@ any node.js http request library. Circuit-b is currently tested to be working wi
  * Native node.js [http.request()](https://nodejs.org/api/http.html#http_http_request_options_callback)
  * [request.js](https://github.com/request/request)
  * [node-fetch](https://github.com/bitinn/node-fetch)
+ * [axios](https://github.com/axios/axios)
 
 The following http request libraries is to be included in these tests (PRs welcome):
 
- * [axios](https://github.com/axios/axios)
  * [got](https://github.com/sindresorhus/got)
 
 
