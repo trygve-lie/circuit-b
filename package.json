@@ -29,6 +29,7 @@
     "test:metrics": "tape test/integration-metrics.js | tap-summary",
     "test:request": "tape test/integration-request.js | tap-summary",
     "test:fetch": "tape test/integration-fetch.js | tap-summary",
+    "test:axios": "tape test/integration-axios.js | tap-summary",
     "test:http": "tape test/integration-http.js | tap-summary",
     "test:breaker": "tape test/breaker.js | tap-summary",
     "test:main": "tape test/main.js | tap-summary",
@@ -41,6 +42,7 @@
     "eslint-plugin-import": "^2.12.0",
     "hostile": "~1.3.2",
     "request": "^2.88.0",
+    "axios": "^0.18.0",
     "node-fetch": "^2.2.0",
     "tap-summary": "^4.0.0",
     "tape": "^4.9.1"

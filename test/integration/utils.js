@@ -4,6 +4,7 @@ const request = require('request');
 const hostile = require('hostile');
 const stream = require('stream');
 const fetch = require('node-fetch');
+const axios = require('axios');
 const http = require('http');
 
 const server = ({ failAt = 3, healAt = 10, type = 'code-500' } = {}) => {
@@ -148,6 +149,29 @@ const clientFetch = (options) => {
 };
 module.exports.clientFetch = clientFetch;
 
+
+const clientAxios = (options) => {
+    return new Promise((resolve) => {
+        axios.get(`http://${options.host}:${options.port}/`)
+            .then((res) => {
+                resolve(res.data);
+            })
+            .catch((error) => {
+                if (error.response) {
+                    resolve('http error');
+                } else if (error.code === 'CircuitBreakerOpenException') {
+                    resolve('circuit breaking');
+                } else if (error.code === 'CircuitBreakerTimeout') {
+                    resolve('timeout');
+                } else if (error.type === 'request-timeout') {
+                    resolve('timeout');
+                } else {
+                    resolve('error');
+                }
+            });
+    });
+};
+module.exports.clientAxios = clientAxios;
 
 
 const sleep = (time) => {
