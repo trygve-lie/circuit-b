@@ -1,26 +1,58 @@
 'use strict';
 
+const request = require('request');
 const test = require('tape');
-const {
-    before, clientRequest, after
-} = require('./integration/utils');
+const { before, after } = require('./integration/utils');
 const timeout = require('./integration/timeout');
 const http400 = require('./integration/http-status-400');
 const http500 = require('./integration/http-status-500');
 const errorFlight = require('./integration/error-in-flight');
+
+const client = (options) => {
+    return new Promise((resolve) => {
+        const opts = {
+            method: 'GET',
+            timeout: options.timeout,
+            url: `http://${options.host}:${options.port}/`,
+        };
+        const req = request(opts);
+
+        req.on('response', (res) => {
+            if (res.statusCode !== 200) {
+                resolve('http error');
+            }
+
+            let data = '';
+            res.on('data', (chunk) => {
+                data += chunk;
+            });
+
+            res.on('end', () => {
+                resolve(data);
+            });
+        });
+
+        req.on('error', (error) => {
+            if (error.code === 'CircuitBreakerOpenException') {
+                resolve('circuit breaking');
+            } else if (error.code === 'CircuitBreakerTimeout') {
+                resolve('timeout');
+            } else if (error.code === 'ESOCKETTIMEDOUT') {
+                resolve('timeout');
+            } else {
+                resolve('error');
+            }
+        });
+    });
+};
 
 test('before', async (t) => {
     await before();
     t.end();
 });
 
-
-/**
- * request.js
- */
-
 test('integration - request.js - timeouts', async (t) => {
-    const result = await timeout(clientRequest);
+    const result = await timeout(client);
     t.deepEqual(result, [
         'ok',
         'ok',
@@ -42,7 +74,7 @@ test('integration - request.js - timeouts', async (t) => {
 });
 
 test('integration - request.js - http status 400 errors', async (t) => {
-    const result = await http400(clientRequest);
+    const result = await http400(client);
     t.deepEqual(result, [
         'ok',
         'ok',
@@ -64,7 +96,7 @@ test('integration - request.js - http status 400 errors', async (t) => {
 });
 
 test('integration - request.js - http status 500 errors', async (t) => {
-    const result = await http500(clientRequest);
+    const result = await http500(client);
     t.deepEqual(result, [
         'ok',
         'ok',
@@ -86,7 +118,7 @@ test('integration - request.js - http status 500 errors', async (t) => {
 });
 
 test('integration - request.js - error', async (t) => {
-    const result = await errorFlight(clientRequest);
+    const result = await errorFlight(client);
     t.deepEqual(result, [
         'ok',
         'ok',
@@ -106,7 +138,6 @@ test('integration - request.js - error', async (t) => {
     ]);
     t.end();
 });
-
 
 test('after', async (t) => {
     await after();

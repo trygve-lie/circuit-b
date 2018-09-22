@@ -1,9 +1,7 @@
 'use strict';
 
-const request = require('request');
 const hostile = require('hostile');
 const stream = require('stream');
-const fetch = require('node-fetch');
 const http = require('http');
 
 const server = ({ failAt = 3, healAt = 10, type = 'code-500' } = {}) => {
@@ -82,74 +80,6 @@ const clientHttp = (options) => {
 };
 module.exports.clientHttp = clientHttp;
 
-
-const clientRequest = (options) => {
-    return new Promise((resolve) => {
-        const opts = {
-            method: 'GET',
-            timeout: options.timeout,
-            url: `http://${options.host}:${options.port}/`,
-        };
-        const req = request(opts);
-
-        req.on('response', (res) => {
-            if (res.statusCode !== 200) {
-                resolve('http error');
-            }
-
-            let data = '';
-            res.on('data', (chunk) => {
-                data += chunk;
-            });
-
-            res.on('end', () => {
-                resolve(data);
-            });
-        });
-
-        req.on('error', (error) => {
-            if (error.code === 'CircuitBreakerOpenException') {
-                resolve('circuit breaking');
-            } else if (error.code === 'CircuitBreakerTimeout') {
-                resolve('timeout');
-            } else if (error.code === 'ESOCKETTIMEDOUT') {
-                resolve('timeout');
-            } else {
-                resolve('error');
-            }
-        });
-    });
-};
-module.exports.clientRequest = clientRequest;
-
-
-const clientFetch = (options) => {
-    return new Promise((resolve) => {
-        fetch(`http://${options.host}:${options.port}/`)
-            .then((res) => {
-                if (res.status !== 200) {
-                    resolve('http error');
-                } else {
-                    resolve(res.text());
-                }
-            })
-            .catch((error) => {
-                if (error.code === 'CircuitBreakerOpenException') {
-                    resolve('circuit breaking');
-                } else if (error.code === 'CircuitBreakerTimeout') {
-                    resolve('timeout');
-                } else if (error.type === 'request-timeout') {
-                    resolve('timeout');
-                } else {
-                    resolve('error');
-                }
-            });
-    });
-};
-module.exports.clientFetch = clientFetch;
-
-
-
 const sleep = (time) => {
     return new Promise((resolve) => {
         setTimeout(() => {
@@ -159,7 +89,6 @@ const sleep = (time) => {
 };
 module.exports.sleep = sleep;
 
-
 const within = (value, min = 0, max = 10) => {
     if (min < value && value < max) {
         return true;
@@ -167,7 +96,6 @@ const within = (value, min = 0, max = 10) => {
     return false;
 };
 module.exports.within = within;
-
 
 const before = () => {
     return new Promise((resolve, reject) => {
@@ -182,7 +110,6 @@ const before = () => {
 };
 module.exports.before = before;
 
-
 const after = () => {
     return new Promise((resolve, reject) => {
         hostile.remove('127.0.0.1', 'circuit-b.local', (error) => {
@@ -195,7 +122,6 @@ const after = () => {
     });
 };
 module.exports.after = after;
-
 
 const destObjectStream = class destObjectStream extends stream.Writable {
     constructor(...args) {

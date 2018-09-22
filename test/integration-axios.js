@@ -1,7 +1,7 @@
 'use strict';
 
-const fetch = require('node-fetch');
 const test = require('tape');
+const axios = require('axios');
 const { before, after } = require('./integration/utils');
 const timeout = require('./integration/timeout');
 const http400 = require('./integration/http-status-400');
@@ -10,16 +10,14 @@ const errorFlight = require('./integration/error-in-flight');
 
 const client = (options) => {
     return new Promise((resolve) => {
-        fetch(`http://${options.host}:${options.port}/`)
+        axios.get(`http://${options.host}:${options.port}/`)
             .then((res) => {
-                if (res.status !== 200) {
-                    resolve('http error');
-                } else {
-                    resolve(res.text());
-                }
+                resolve(res.data);
             })
             .catch((error) => {
-                if (error.code === 'CircuitBreakerOpenException') {
+                if (error.response) {
+                    resolve('http error');
+                } else if (error.code === 'CircuitBreakerOpenException') {
                     resolve('circuit breaking');
                 } else if (error.code === 'CircuitBreakerTimeout') {
                     resolve('timeout');
@@ -37,7 +35,7 @@ test('before', async (t) => {
     t.end();
 });
 
-test('integration - node-fetch - timeouts', async (t) => {
+test('integration - axios - timeouts', async (t) => {
     const result = await timeout(client);
     t.deepEqual(result, [
         'ok',
@@ -59,7 +57,7 @@ test('integration - node-fetch - timeouts', async (t) => {
     t.end();
 });
 
-test('integration - node-fetch - http status 400 errors', async (t) => {
+test('integration - axios - http status 400 errors', async (t) => {
     const result = await http400(client);
     t.deepEqual(result, [
         'ok',
@@ -81,7 +79,7 @@ test('integration - node-fetch - http status 400 errors', async (t) => {
     t.end();
 });
 
-test('integration - node-fetch - http status 500 errors', async (t) => {
+test('integration - axios - http status 500 errors', async (t) => {
     const result = await http500(client);
     t.deepEqual(result, [
         'ok',
@@ -103,7 +101,7 @@ test('integration - node-fetch - http status 500 errors', async (t) => {
     t.end();
 });
 
-test('integration - node-fetch - error', async (t) => {
+test('integration - axios - error', async (t) => {
     const result = await errorFlight(client);
     t.deepEqual(result, [
         'ok',
