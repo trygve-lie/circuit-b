@@ -1,24 +1,44 @@
 'use strict';
 
+const fetch = require('node-fetch');
 const test = require('tape');
-const {
-    before, clientFetch, after
-} = require('./integration/utils');
+const { before, after } = require('./integration/utils');
 const timeout = require('./integration/timeout');
 const http400 = require('./integration/http-status-400');
 const http500 = require('./integration/http-status-500');
 const errorFlight = require('./integration/error-in-flight');
+
+const client = (options) => {
+    return new Promise((resolve) => {
+        fetch(`http://${options.host}:${options.port}/`)
+            .then((res) => {
+                if (res.status !== 200) {
+                    resolve('http error');
+                } else {
+                    resolve(res.text());
+                }
+            })
+            .catch((error) => {
+                if (error.code === 'CircuitBreakerOpenException') {
+                    resolve('circuit breaking');
+                } else if (error.code === 'CircuitBreakerTimeout') {
+                    resolve('timeout');
+                } else if (error.type === 'request-timeout') {
+                    resolve('timeout');
+                } else {
+                    resolve('error');
+                }
+            });
+    });
+};
 
 test('before', async (t) => {
     await before();
     t.end();
 });
 
-/**
- * node-fetch
- */
 test('integration - node-fetch - timeouts', async (t) => {
-    const result = await timeout(clientFetch);
+    const result = await timeout(client);
     t.deepEqual(result, [
         'ok',
         'ok',
@@ -40,7 +60,7 @@ test('integration - node-fetch - timeouts', async (t) => {
 });
 
 test('integration - node-fetch - http status 400 errors', async (t) => {
-    const result = await http400(clientFetch);
+    const result = await http400(client);
     t.deepEqual(result, [
         'ok',
         'ok',
@@ -62,7 +82,7 @@ test('integration - node-fetch - http status 400 errors', async (t) => {
 });
 
 test('integration - node-fetch - http status 500 errors', async (t) => {
-    const result = await http500(clientFetch);
+    const result = await http500(client);
     t.deepEqual(result, [
         'ok',
         'ok',
@@ -84,7 +104,7 @@ test('integration - node-fetch - http status 500 errors', async (t) => {
 });
 
 test('integration - node-fetch - error', async (t) => {
-    const result = await errorFlight(clientFetch);
+    const result = await errorFlight(client);
     t.deepEqual(result, [
         'ok',
         'ok',
