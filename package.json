@@ -44,10 +44,12 @@
     "request": "^2.88.0",
     "axios": "^0.18.0",
     "node-fetch": "^2.2.0",
+    "synclog": "^1.0.1",
     "tap-summary": "^4.0.0",
     "tape": "^4.9.1"
   },
   "dependencies": {
-    "@metrics/client": "^1.0.0"
+    "@metrics/client": "1.0.0",
+    "abslog": "2.2.0"
   }
 }

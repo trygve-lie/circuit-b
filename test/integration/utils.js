@@ -38,6 +38,12 @@ const server = ({ failAt = 3, healAt = 10, type = 'code-500' } = {}) => {
         }).listen({ host: '127.0.0.1', port: 0 }, () => {
             resolve(s);
         });
+
+        s._destroy = () => {
+            return new Promise((resolve) => {
+                s.close(resolve);
+            });
+        }
     });
 };
 module.exports.server = server;

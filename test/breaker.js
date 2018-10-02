@@ -117,7 +117,7 @@ test('.trip() - breaker is "closed" - reaches max failures - should set "tripped
     breaker.trip();
 
     const now = Date.now();
-    t.true(within(breaker.tripped - now, 4900, 5100));
+    t.true(within(breaker.tripped - now, 4700, 5400));
     t.end();
 });
 
