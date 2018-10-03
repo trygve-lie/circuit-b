@@ -243,12 +243,12 @@ breaker.enable();
 
 // Will timeout after 5 seconds, and trigger breaker
 request('http://api.somewhere.com', (error, response, body) => {
-        console.log(body);
+    console.log(body);
 });
 
 // Will timeout after 10 seconds, and trigger breaker
 request('http://api.elsewhere.net', (error, response, body) => {
-        console.log(body);
+    console.log(body);
 });
 ```
 
@@ -271,15 +271,15 @@ breaker.set('api.somewhere.com', { timeout: 5000 });
 breaker.enable();
 
 request('http://api.somewhere.com', (error, response, body) => {
-        if (error) {
-            if (error.code === 'CircuitBreakerTimeout') {
-                console.log('Downstream service is timing out');
-            } else {
-                console.log('Something went humpty dumpty');
-            }
-            return;
+    if (error) {
+        if (error.code === 'CircuitBreakerTimeout') {
+            console.log('Downstream service is timing out');
+        } else {
+            console.log('Something went humpty dumpty');
         }
-        console.log(body);
+        return;
+    }
+    console.log(body);
 });
 ```
 
@@ -303,15 +303,15 @@ breaker.set('api.somewhere.com', { timeout: 5000 });
 breaker.enable();
 
 request('http://api.somewhere.com', (error, response, body) => {
-        if (error) {
-            if (error.code === 'CircuitBreakerOpenException') {
-                console.log('Downstream service is curcuit broken');
-            } else {
-                console.log('Something went humpty dumpty');
-            }
-            return;
+    if (error) {
+        if (error.code === 'CircuitBreakerOpenException') {
+            console.log('Downstream service is curcuit broken');
+        } else {
+            console.log('Something went humpty dumpty');
         }
-        console.log(body);
+        return;
+    }
+    console.log(body);
 });
 ```
 
