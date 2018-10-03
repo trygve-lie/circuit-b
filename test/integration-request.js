@@ -8,43 +8,41 @@ const http400 = require('./integration/http-status-400');
 const http500 = require('./integration/http-status-500');
 const errorFlight = require('./integration/error-in-flight');
 
-const client = (options) => {
-    return new Promise((resolve) => {
-        const opts = {
-            method: 'GET',
-            timeout: options.timeout,
-            url: `http://${options.host}:${options.port}/`,
-        };
-        const req = request(opts);
+const client = options => new Promise((resolve) => {
+    const opts = {
+        method: 'GET',
+        timeout: options.timeout,
+        url: `http://${options.host}:${options.port}/`,
+    };
+    const req = request(opts);
 
-        req.on('response', (res) => {
-            if (res.statusCode !== 200) {
-                resolve('http error');
-            }
+    req.on('response', (res) => {
+        if (res.statusCode !== 200) {
+            resolve('http error');
+        }
 
-            let data = '';
-            res.on('data', (chunk) => {
-                data += chunk;
-            });
-
-            res.on('end', () => {
-                resolve(data);
-            });
+        let data = '';
+        res.on('data', (chunk) => {
+            data += chunk;
         });
 
-        req.on('error', (error) => {
-            if (error.code === 'CircuitBreakerOpenException') {
-                resolve('circuit breaking');
-            } else if (error.code === 'CircuitBreakerTimeout') {
-                resolve('timeout');
-            } else if (error.code === 'ESOCKETTIMEDOUT') {
-                resolve('timeout');
-            } else {
-                resolve('error');
-            }
+        res.on('end', () => {
+            resolve(data);
         });
     });
-};
+
+    req.on('error', (error) => {
+        if (error.code === 'CircuitBreakerOpenException') {
+            resolve('circuit breaking');
+        } else if (error.code === 'CircuitBreakerTimeout') {
+            resolve('timeout');
+        } else if (error.code === 'ESOCKETTIMEDOUT') {
+            resolve('timeout');
+        } else {
+            resolve('error');
+        }
+    });
+});
 
 test('before', async (t) => {
     await before();
@@ -68,7 +66,7 @@ test('integration - request.js - timeouts', async (t) => {
         'circuit breaking',
         'circuit breaking',
         'ok',
-        'ok'
+        'ok',
     ]);
     t.end();
 });
@@ -90,7 +88,7 @@ test('integration - request.js - http status 400 errors', async (t) => {
         'circuit breaking',
         'circuit breaking',
         'ok',
-        'ok'
+        'ok',
     ]);
     t.end();
 });
@@ -112,7 +110,7 @@ test('integration - request.js - http status 500 errors', async (t) => {
         'circuit breaking',
         'circuit breaking',
         'ok',
-        'ok'
+        'ok',
     ]);
     t.end();
 });
@@ -134,7 +132,7 @@ test('integration - request.js - error', async (t) => {
         'circuit breaking',
         'circuit breaking',
         'ok',
-        'ok'
+        'ok',
     ]);
     t.end();
 });

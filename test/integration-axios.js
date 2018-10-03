@@ -8,27 +8,25 @@ const http400 = require('./integration/http-status-400');
 const http500 = require('./integration/http-status-500');
 const errorFlight = require('./integration/error-in-flight');
 
-const client = (options) => {
-    return new Promise((resolve) => {
-        axios.get(`http://${options.host}:${options.port}/`)
-            .then((res) => {
-                resolve(res.data);
-            })
-            .catch((error) => {
-                if (error.response) {
-                    resolve('http error');
-                } else if (error.code === 'CircuitBreakerOpenException') {
-                    resolve('circuit breaking');
-                } else if (error.code === 'CircuitBreakerTimeout') {
-                    resolve('timeout');
-                } else if (error.type === 'request-timeout') {
-                    resolve('timeout');
-                } else {
-                    resolve('error');
-                }
-            });
-    });
-};
+const client = options => new Promise((resolve) => {
+    axios.get(`http://${options.host}:${options.port}/`)
+        .then((res) => {
+            resolve(res.data);
+        })
+        .catch((error) => {
+            if (error.response) {
+                resolve('http error');
+            } else if (error.code === 'CircuitBreakerOpenException') {
+                resolve('circuit breaking');
+            } else if (error.code === 'CircuitBreakerTimeout') {
+                resolve('timeout');
+            } else if (error.type === 'request-timeout') {
+                resolve('timeout');
+            } else {
+                resolve('error');
+            }
+        });
+});
 
 test('before', async (t) => {
     await before();
@@ -52,7 +50,7 @@ test('integration - axios - timeouts', async (t) => {
         'circuit breaking',
         'circuit breaking',
         'ok',
-        'ok'
+        'ok',
     ]);
     t.end();
 });
@@ -74,7 +72,7 @@ test('integration - axios - http status 400 errors', async (t) => {
         'circuit breaking',
         'circuit breaking',
         'ok',
-        'ok'
+        'ok',
     ]);
     t.end();
 });
@@ -96,7 +94,7 @@ test('integration - axios - http status 500 errors', async (t) => {
         'circuit breaking',
         'circuit breaking',
         'ok',
-        'ok'
+        'ok',
     ]);
     t.end();
 });
@@ -118,7 +116,7 @@ test('integration - axios - error', async (t) => {
         'circuit breaking',
         'circuit breaking',
         'ok',
-        'ok'
+        'ok',
     ]);
     t.end();
 });
