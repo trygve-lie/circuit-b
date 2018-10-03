@@ -2,7 +2,7 @@
 
 const test = require('tape');
 const {
-    before, clientHttp, after
+    before, clientHttp, after,
 } = require('./integration/utils');
 const timeout = require('./integration/timeout');
 const http400 = require('./integration/http-status-400');
@@ -36,7 +36,7 @@ test('integration - http.get - timeouts', async (t) => {
         'circuit breaking',
         'circuit breaking',
         'ok',
-        'ok'
+        'ok',
     ]);
     t.end();
 });
@@ -58,7 +58,7 @@ test('integration - http.get - http status 400 errors', async (t) => {
         'circuit breaking',
         'circuit breaking',
         'ok',
-        'ok'
+        'ok',
     ]);
     t.end();
 });
@@ -80,7 +80,7 @@ test('integration - http.get - http status 500 errors', async (t) => {
         'circuit breaking',
         'circuit breaking',
         'ok',
-        'ok'
+        'ok',
     ]);
     t.end();
 });
@@ -102,7 +102,7 @@ test('integration - http.get - error', async (t) => {
         'circuit breaking',
         'circuit breaking',
         'ok',
-        'ok'
+        'ok',
     ]);
     t.end();
 });

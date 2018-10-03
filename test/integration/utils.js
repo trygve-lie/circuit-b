@@ -4,95 +4,87 @@ const hostile = require('hostile');
 const stream = require('stream');
 const http = require('http');
 
-const server = ({ failAt = 3, healAt = 10, type = 'code-500' } = {}) => {
-    return new Promise((resolve) => {
-        let counter = 0;
-        const s = http.createServer((req, res) => {
-            counter += 1;
-            if (counter >= failAt && counter <= healAt) {
-                if (type === 'code-400') {
-                    res.writeHead(400, { 'Content-Type': 'text/plain' });
-                    res.end('error');
-                }
-                if (type === 'code-500') {
-                    res.writeHead(500, { 'Content-Type': 'text/plain' });
-                    res.end('error');
-                }
-                if (type === 'timeout') {
-                    setTimeout(() => {
-                        res.writeHead(200, { 'Content-Type': 'text/plain' });
-                        res.end('ok');
-                    }, 1000);
-                }
-                if (type === 'error') {
-                    res.writeHead(200, { 'Content-Type': 'text/plain' });
-                    setTimeout(() => {
-                        res.socket.destroy(new Error('Problem'));
-                    }, 5);
-                }
-                return;
+const server = ({ failAt = 3, healAt = 10, type = 'code-500' } = {}) => new Promise((resolve) => {
+    let counter = 0;
+    const s = http.createServer((req, res) => {
+        counter += 1;
+        if (counter >= failAt && counter <= healAt) {
+            if (type === 'code-400') {
+                res.writeHead(400, { 'Content-Type': 'text/plain' });
+                res.end('error');
             }
-
-            res.writeHead(200, { 'Content-Type': 'text/plain' });
-            res.end('ok');
-        }).listen({ host: '127.0.0.1', port: 0 }, () => {
-            resolve(s);
-        });
-
-        s._destroy = () => {
-            return new Promise((resolve) => {
-                s.close(resolve);
-            });
+            if (type === 'code-500') {
+                res.writeHead(500, { 'Content-Type': 'text/plain' });
+                res.end('error');
+            }
+            if (type === 'timeout') {
+                setTimeout(() => {
+                    res.writeHead(200, { 'Content-Type': 'text/plain' });
+                    res.end('ok');
+                }, 1000);
+            }
+            if (type === 'error') {
+                res.writeHead(200, { 'Content-Type': 'text/plain' });
+                setTimeout(() => {
+                    res.socket.destroy(new Error('Problem'));
+                }, 5);
+            }
+            return;
         }
+
+        res.writeHead(200, { 'Content-Type': 'text/plain' });
+        res.end('ok');
+    }).listen({ host: '127.0.0.1', port: 0 }, () => {
+        resolve(s);
     });
-};
+
+    s.stop = () => new Promise((res) => {
+        s.close(res);
+    });
+});
 module.exports.server = server;
 
 
-const clientHttp = (options) => {
-    return new Promise((resolve) => {
-        const req = http.get(options);
+const clientHttp = options => new Promise((resolve) => {
+    const req = http.get(options);
 
-        req.on('response', (res) => {
-            if (res.statusCode !== 200) {
-                resolve('http error');
-            }
+    req.on('response', (res) => {
+        if (res.statusCode !== 200) {
+            resolve('http error');
+        }
 
-            let data = '';
-            res.on('data', (chunk) => {
-                data += chunk;
-            });
-
-            res.on('end', () => {
-                resolve(data);
-            });
+        let data = '';
+        res.on('data', (chunk) => {
+            data += chunk;
         });
 
-        req.on('error', (error) => {
-            if (error.code === 'CircuitBreakerOpenException') {
-                resolve('circuit breaking');
-            } else if (error.code === 'CircuitBreakerTimeout') {
-                resolve('timeout');
-            } else {
-                resolve('error');
-            }
-        });
-
-        req.on('timeout', () => {
-            resolve('timeout');
-            req.destroy();
+        res.on('end', () => {
+            resolve(data);
         });
     });
-};
+
+    req.on('error', (error) => {
+        if (error.code === 'CircuitBreakerOpenException') {
+            resolve('circuit breaking');
+        } else if (error.code === 'CircuitBreakerTimeout') {
+            resolve('timeout');
+        } else {
+            resolve('error');
+        }
+    });
+
+    req.on('timeout', () => {
+        resolve('timeout');
+        req.destroy();
+    });
+});
 module.exports.clientHttp = clientHttp;
 
-const sleep = (time) => {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve();
-        }, time);
-    });
-};
+const sleep = time => new Promise((resolve) => {
+    setTimeout(() => {
+        resolve();
+    }, time);
+});
 module.exports.sleep = sleep;
 
 const within = (value, min = 0, max = 10) => {
@@ -103,36 +95,32 @@ const within = (value, min = 0, max = 10) => {
 };
 module.exports.within = within;
 
-const before = () => {
-    return new Promise((resolve, reject) => {
-        hostile.set('127.0.0.1', 'circuit-b.local', (error) => {
-            if (error) {
-                reject(error);
-                return;
-            }
-            resolve();
-        });
+const before = () => new Promise((resolve, reject) => {
+    hostile.set('127.0.0.1', 'circuit-b.local', (error) => {
+        if (error) {
+            reject(error);
+            return;
+        }
+        resolve();
     });
-};
+});
 module.exports.before = before;
 
-const after = () => {
-    return new Promise((resolve, reject) => {
-        hostile.remove('127.0.0.1', 'circuit-b.local', (error) => {
-            if (error) {
-                reject(error);
-                return;
-            }
-            resolve();
-        });
+const after = () => new Promise((resolve, reject) => {
+    hostile.remove('127.0.0.1', 'circuit-b.local', (error) => {
+        if (error) {
+            reject(error);
+            return;
+        }
+        resolve();
     });
-};
+});
 module.exports.after = after;
 
-const destObjectStream = class destObjectStream extends stream.Writable {
+const DestObjectStream = class DestObjectStream extends stream.Writable {
     constructor(...args) {
         super(Object.assign({
-            objectMode: true
+            objectMode: true,
         }, args));
 
         this.chunks = [];
@@ -151,4 +139,4 @@ const destObjectStream = class destObjectStream extends stream.Writable {
         });
     }
 };
-module.exports.destObjectStream = destObjectStream;
+module.exports.DestObjectStream = DestObjectStream;

@@ -2,7 +2,7 @@
 
 const test = require('tape');
 const {
-    before, after
+    before, after,
 } = require('./integration/utils');
 const metrics = require('./integration/metrics');
 
@@ -33,7 +33,7 @@ test('integration - metrics', async (t) => {
         'open',
         'open',
         'half_open',
-        'closed'
+        'closed',
     ]);
     t.end();
 });

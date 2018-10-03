@@ -2,7 +2,7 @@
 
 const CircuitB = require('../../');
 const {
-    server, clientHttp, sleep, destObjectStream
+    server, clientHttp, sleep, DestObjectStream,
 } = require('./utils');
 
 const test = async () => {
@@ -10,7 +10,7 @@ const test = async () => {
     const s = await server({ type: 'code-500', healAt: 7 });
     const address = s.address();
 
-    const result = new destObjectStream();
+    const result = new DestObjectStream();
     cb.metrics.pipe(result);
 
     cb.set('circuit-b.local', { maxFailures: 4 });
@@ -54,15 +54,14 @@ const test = async () => {
     await clientHttp(options);
     await clientHttp(options);
 
-    await s.close();
+    await s.stop();
+    await sleep(20);
 
     cb.del('circuit-b.local');
     cb.disable();
 
     const arr = await result.result();
-    return arr.map((obj) => {
-        return obj.meta.state;
-    });
+    return arr.map(obj => obj.meta.state);
 };
 
 module.exports = test;

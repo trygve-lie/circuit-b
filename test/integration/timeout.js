@@ -51,7 +51,7 @@ const test = async (client) => {
     result.push(await client(options));
     result.push(await client(options));
 
-    await s._destroy();
+    await s.stop();
     await sleep(20);
 
     cb.disable();
