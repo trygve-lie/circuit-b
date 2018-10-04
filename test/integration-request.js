@@ -2,7 +2,7 @@
 
 const request = require('request');
 const test = require('tape');
-const { before, after } = require('./integration/utils');
+const { before, after } = require('../utils/utils');
 const timeout = require('./integration/timeout');
 const http400 = require('./integration/http-status-400');
 const http500 = require('./integration/http-status-500');

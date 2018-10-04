@@ -3,7 +3,7 @@
 const CircuitB = require('../../');
 const {
     server, clientHttp, sleep, DestObjectStream,
-} = require('./utils');
+} = require('../../utils/utils');
 
 const test = async () => {
     const cb = new CircuitB({ maxAge: 200, timeout: 100 });
