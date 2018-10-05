@@ -59,7 +59,7 @@ any node.js http request library. Circuit-b is currently tested to be working wi
  * [request.js](https://github.com/request/request)
  * [node-fetch](https://github.com/bitinn/node-fetch)
  * [axios](https://github.com/axios/axios)
- * [got](https://github.com/sindresorhus/got) - [[Note](https://github.com/trygve-lie/circuit-b#clients-with-retries)]
+ * [got](https://github.com/sindresorhus/got) - [[note](https://github.com/trygve-lie/circuit-b#clients-with-retries)]
 
 
 ## Constructor
