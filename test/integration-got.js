@@ -1,39 +1,47 @@
 'use strict';
 
+const got = require('got');
 const test = require('tape');
-const axios = require('axios');
 const { before, after } = require('../utils/utils');
 const timeout = require('./integration/timeout');
 const http400 = require('./integration/http-status-400');
 const http500 = require('./integration/http-status-500');
+const http500Retry = require('./integration/http-status-500-retry');
 const errorFlight = require('./integration/error-in-flight');
+const errorFlightRetry = require('./integration/error-in-flight-retry');
 
-const client = options => new Promise((resolve) => {
-    axios.get(`http://${options.host}:${options.port}/`)
-        .then((res) => {
-            resolve(res.data);
-        })
-        .catch((error) => {
-            if (error.response) {
-                resolve('http error');
-            } else if (error.code === 'CircuitBreakerOpenException') {
-                resolve('circuit breaking');
-            } else if (error.code === 'CircuitBreakerTimeout') {
-                resolve('timeout');
-            } else if (error.type === 'request-timeout') {
-                resolve('timeout');
-            } else {
-                resolve('error');
-            }
-        });
-});
+
+const client = async (options) => {
+    const opts = {
+        method: 'GET',
+        timeout: options.timeout,
+        retry: options.retry,
+    };
+
+    try {
+        const response = await got(`http://${options.host}:${options.port}/`, opts);
+        return response.body;
+    } catch (error) {
+        if (error.response && error.response.statusCode) {
+            return 'http error';
+        } if (error.code === 'CircuitBreakerOpenException') {
+            return 'circuit breaking';
+        } if (error.code === 'CircuitBreakerTimeout') {
+            return 'timeout';
+        } if (error.code === 'ESOCKETTIMEDOUT') {
+            return 'timeout';
+        }
+        return 'error';
+    }
+};
+
 
 test('before', async (t) => {
     await before();
     t.end();
 });
 
-test('integration - axios - timeouts', async (t) => {
+test('integration - got - retry: 0 - timeouts', async (t) => {
     const result = await timeout(client);
     t.deepEqual(result, [
         'ok',
@@ -55,7 +63,7 @@ test('integration - axios - timeouts', async (t) => {
     t.end();
 });
 
-test('integration - axios - http status 400 errors', async (t) => {
+test('integration - got - retry: 0 - http status 400 errors', async (t) => {
     const result = await http400(client);
     t.deepEqual(result, [
         'ok',
@@ -77,7 +85,7 @@ test('integration - axios - http status 400 errors', async (t) => {
     t.end();
 });
 
-test('integration - axios - http status 500 errors', async (t) => {
+test('integration - got - retry: 0 - http status 500 errors', async (t) => {
     const result = await http500(client);
     t.deepEqual(result, [
         'ok',
@@ -99,7 +107,7 @@ test('integration - axios - http status 500 errors', async (t) => {
     t.end();
 });
 
-test('integration - axios - error', async (t) => {
+test('integration - got - retry: 0 - error', async (t) => {
     const result = await errorFlight(client);
     t.deepEqual(result, [
         'ok',
@@ -120,6 +128,47 @@ test('integration - axios - error', async (t) => {
     ]);
     t.end();
 });
+
+test('integration - got - retry: default(2) - http status 500 errors', async (t) => {
+    const result = await http500Retry(client);
+    t.deepEqual(result, [
+        'ok',
+        'ok',
+        'http error',
+        'http error',
+        'circuit breaking',
+        'circuit breaking',
+        'http error',
+        'circuit breaking',
+        'circuit breaking',
+        'circuit breaking',
+        'circuit breaking',
+        'ok',
+        'ok',
+    ]);
+    t.end();
+});
+
+test('integration - got - retry: default (2) - error', async (t) => {
+    const result = await errorFlightRetry(client);
+    t.deepEqual(result, [
+        'ok',
+        'ok',
+        'error',
+        'error',
+        'circuit breaking',
+        'circuit breaking',
+        'error',
+        'circuit breaking',
+        'circuit breaking',
+        'circuit breaking',
+        'circuit breaking',
+        'ok',
+        'ok',
+    ]);
+    t.end();
+});
+
 
 test('after', async (t) => {
     await after();

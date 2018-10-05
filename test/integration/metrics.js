@@ -3,7 +3,7 @@
 const CircuitB = require('../../');
 const {
     server, clientHttp, sleep, DestObjectStream,
-} = require('./utils');
+} = require('../../utils/utils');
 
 const test = async () => {
     const cb = new CircuitB({ maxAge: 200, timeout: 100 });
@@ -19,6 +19,8 @@ const test = async () => {
     const options = {
         host: 'circuit-b.local',
         port: address.port,
+        timeout: 2000,
+        retry: 0,
     };
 
     // two ok responses, server fails at third request. total 2 request to server

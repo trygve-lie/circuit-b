@@ -1,7 +1,7 @@
 'use strict';
 
 const CircuitB = require('../../');
-const { server, sleep } = require('./utils');
+const { server, sleep } = require('../../utils/utils');
 
 const test = async (client) => {
     const cb = new CircuitB({ maxAge: 200, timeout: 100 });
@@ -14,6 +14,8 @@ const test = async (client) => {
     const options = {
         host: 'circuit-b.local',
         port: address.port,
+        timeout: 2000,
+        retry: 0,
     };
 
     const result = [];

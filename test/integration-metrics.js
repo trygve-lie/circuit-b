@@ -3,7 +3,7 @@
 const test = require('tape');
 const {
     before, after,
-} = require('./integration/utils');
+} = require('../utils/utils');
 const metrics = require('./integration/metrics');
 
 test('before', async (t) => {

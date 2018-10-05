@@ -1,7 +1,7 @@
 'use strict';
 
 const test = require('tape');
-const { sleep, within } = require('./integration/utils');
+const { sleep, within } = require('../utils/utils');
 const Breaker = require('../lib/breaker');
 
 /**
@@ -121,6 +121,12 @@ test('.trip() - breaker is "closed" - reaches max failures - should set "tripped
     t.end();
 });
 
+test('.trip() - call method - should return "true"', (t) => {
+    const breaker = new Breaker('circuit-b.local');
+    const result = breaker.trip();
+    t.true(result);
+    t.end();
+});
 
 /**
  * .check()
