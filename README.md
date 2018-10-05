@@ -59,10 +59,7 @@ any node.js http request library. Circuit-b is currently tested to be working wi
  * [request.js](https://github.com/request/request)
  * [node-fetch](https://github.com/bitinn/node-fetch)
  * [axios](https://github.com/axios/axios)
-
-The following http request libraries is to be included in these tests (PRs welcome):
-
- * [got](https://github.com/sindresorhus/got)
+ * [got](https://github.com/sindresorhus/got) - [Note](https://github.com/trygve-lie/circuit-b#clients-with-retries)
 
 
 ## Constructor
@@ -314,6 +311,37 @@ request('http://api.somewhere.com', (error, response, body) => {
     console.log(body);
 });
 ```
+
+
+## Clients with retries
+
+There are http clients out there which will retry http requests under the hood if
+it encounters certain errors (network errors, server errors etc).
+
+This plays out as follow: one initializes a request with the http client where
+it ex is configured to retry two times if it encounters an error. When the client
+encounters an error is should retry on, it will under the hood, assuming the
+errors continue, do two extra requests in addition to the initial request before
+it surfaces the error to the user of the client. In this example; what looks like
+one request for the user of the client are in reality three requests.
+
+Since circuit-b listen on [`Net.socket`](https://nodejs.org/api/net.html#net_class_net_socket)
+events it will register the retry requests on clients with such features. In the
+above example, circuit-b will have registered three failed requests. Not one.
+
+The Circuit Breaker pattern is a pattern to reduce traffic to a upstream service
+when it errors. A retry pattern on a http client is quite the opposite of this
+pattern.
+
+Due to this; it is adviced that if the http client has retry functionallity, this
+feature should be configured to off or set to 0 retries.
+
+If one are not able to configure this it might be valuable to set `maxFailures` a
+bit higher so there is a bit higher margin before the breaker kicks in.
+
+Known http clients with default retries:
+
+ * [got](https://github.com/sindresorhus/got)
 
 
 ## node.js compabillity
