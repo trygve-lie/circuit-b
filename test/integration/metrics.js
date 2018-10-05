@@ -19,6 +19,8 @@ const test = async () => {
     const options = {
         host: 'circuit-b.local',
         port: address.port,
+        timeout: 2000,
+        retry: 0,
     };
 
     // two ok responses, server fails at third request. total 2 request to server

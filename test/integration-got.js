@@ -6,13 +6,16 @@ const { before, after } = require('../utils/utils');
 const timeout = require('./integration/timeout');
 const http400 = require('./integration/http-status-400');
 const http500 = require('./integration/http-status-500');
+const http500Retry = require('./integration/http-status-500-retry');
 const errorFlight = require('./integration/error-in-flight');
+const errorFlightRetry = require('./integration/error-in-flight-retry');
+
 
 const client = async (options) => {
     const opts = {
         method: 'GET',
         timeout: options.timeout,
-        retry: 0,
+        retry: options.retry,
     };
 
     try {
@@ -125,6 +128,47 @@ test('integration - got - retry: 0 - error', async (t) => {
     ]);
     t.end();
 });
+
+test('integration - got - retry: default(2) - http status 500 errors', async (t) => {
+    const result = await http500Retry(client);
+    t.deepEqual(result, [
+        'ok',
+        'ok',
+        'http error',
+        'http error',
+        'circuit breaking',
+        'circuit breaking',
+        'http error',
+        'circuit breaking',
+        'circuit breaking',
+        'circuit breaking',
+        'circuit breaking',
+        'ok',
+        'ok',
+    ]);
+    t.end();
+});
+
+test('integration - got - retry: default (2) - error', async (t) => {
+    const result = await errorFlightRetry(client);
+    t.deepEqual(result, [
+        'ok',
+        'ok',
+        'error',
+        'error',
+        'circuit breaking',
+        'circuit breaking',
+        'error',
+        'circuit breaking',
+        'circuit breaking',
+        'circuit breaking',
+        'circuit breaking',
+        'ok',
+        'ok',
+    ]);
+    t.end();
+});
+
 
 test('after', async (t) => {
     await after();

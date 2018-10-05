@@ -5,7 +5,7 @@ const { server, sleep } = require('../../utils/utils');
 
 const test = async (client) => {
     const cb = new CircuitB({ maxAge: 200, timeout: 100 });
-    const s = await server({ type: 'code-500', healAt: 7 });
+    const s = await server({ type: 'code-500', healAt: 11 });
     const address = s.address();
 
     cb.set('circuit-b.local', { maxFailures: 4 });
@@ -15,7 +15,6 @@ const test = async (client) => {
         host: 'circuit-b.local',
         port: address.port,
         timeout: 2000,
-        retry: 0,
     };
 
     const result = [];
@@ -24,9 +23,7 @@ const test = async (client) => {
     result.push(await client(options));
     result.push(await client(options));
 
-    // four error responses, server failed at third request. total 6 request to server
-    result.push(await client(options));
-    result.push(await client(options));
+    // two error responses which is a total of 6 requests to server, server failed at third request. total 8 request to server
     result.push(await client(options));
     result.push(await client(options));
 
@@ -37,7 +34,7 @@ const test = async (client) => {
     // exceed max time for circuit breaker. let one request to server through
     await sleep(220);
 
-    // one error responses. total 7 request to server
+    // one error responses which is a total of 3 requests to server. total 11 request to server
     result.push(await client(options));
 
     // circuit breaker is now terminating requests to server

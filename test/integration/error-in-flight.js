@@ -15,6 +15,7 @@ const test = async (client) => {
         host: 'circuit-b.local',
         port: address.port,
         timeout: 2000,
+        retry: 0,
     };
 
     const result = [];
