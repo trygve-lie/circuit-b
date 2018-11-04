@@ -10,7 +10,7 @@ const server = ({ failAt = 3, healAt = 10, type = 'code-500' } = {}) => new Prom
         counter += 1;
         if (counter >= failAt && counter <= healAt) {
             if (type === 'code-400') {
-                res.writeHead(400, { 'Content-Type': 'text/plain' });
+                res.writeHead(429, { 'Content-Type': 'text/plain' });
                 res.end('error');
             }
             if (type === 'code-500') {

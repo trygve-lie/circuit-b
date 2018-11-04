@@ -32,6 +32,7 @@
     "test:axios": "tape test/integration-axios.js | tap-summary",
     "test:http": "tape test/integration-http.js | tap-summary",
     "test:got": "tape test/integration-got.js | tap-summary",
+    "test:response": "tape test/response.js | tap-summary",
     "test:breaker": "tape test/breaker.js | tap-summary",
     "test:main": "tape test/main.js | tap-summary",
     "lint": "eslint .",
