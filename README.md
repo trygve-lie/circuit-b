@@ -78,6 +78,7 @@ An Object containing misc configuration. The following values can be provided:
  * **maxFailures** - `Number` - Default number of failures which should occur before the breaker switch into open state. Can be overrided by each host. Default: 5.
  * **maxAge** - `Number` - Default time in milliseconds from the breaker entered open state until it enters half open state. Can be overrided by each host. Default: 5000ms.
  * **timeout** - `Number` - Default request timeout in milliseconds. Can be overrided by each host. Default: 20000ms.
+ * **onResponse** - `Function` - Default function execute on a http response to tripp the breaker. Default trips the breaker on http status codes: `408`, `413`, `429`, `500`, `502`, `503`, `504`.
 
 
 ## API
@@ -100,7 +101,8 @@ This method take the following arguments:
  * **host** - `String` - The host to guard. Required.
  * **options.maxFailures** - `Number` - Number of failures which should occur before the breaker switch into open state. Inherits from constructor if unset.
  * **options.maxAge** - `Number` - Time in milliseconds from the breaker entered open state until it enters half open state. Inherits from constructor if unset.
- * **options.timeout** - `Number` - Request timeout in milliseconds. Can be overrided by each host. Inherits from constructor if unset.
+ * **options.timeout** - `Number` - Request timeout in milliseconds. Inherits from constructor if unset.
+ * **options.onResponse** - `Function` - Function to be execute on a http response to tripp the breaker. Inherits from constructor if unset.
 
 ### .del(host)
 
@@ -193,6 +195,64 @@ breaker.on('half_open', (host) => {
     console.log(host, 'half open state');
 });
 ```
+
+
+## HTTP Responses
+
+A struggeling downstream service can despite that respond to http requests. Due to this
+Circuit-b does monitor the http statuses on requests and trip the breaker on sertain
+status codes.
+
+The breaker will trip when the following http status codes occure in a downstream service:
+
+ * `408` - [Request Timeout](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/408)
+ * `413` - [Payload Too Large](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/413)
+ * `429` - [Too Many Requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429)
+ * `500` - [Internal Server Error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500)
+ * `502` - [Bade Gateway](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/502)
+ * `503` - [Service Unavailable](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503)
+ * `504` - [Gateway Timeout](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/504)
+
+
+### Custom tripper on HTTP responses
+
+It is possible to provide a custom tripper for HTTP responses by providing a function to
+the `onResponse` options on the `constructor` (globally) or the `.set()` method (peer
+host).
+
+The function will be executed on each intercepted request with the [http.IncomingMessage](https://nodejs.org/api/http.html#http_class_http_incomingmessage)
+as the first argument.
+
+The function must return a `Boolean` where `false` will **not** trip the breaker and `true`
+will trip the breaker.
+
+Example of tripping the breaker only when the downstream server responds with http status
+code 500:
+
+```js
+const request = require('request');
+const Breaker = require('circuit-b');
+
+const breaker = new Breaker();
+
+breaker.set('api.somewhere.com', {
+    onResponse: (res) => {
+        if (res.statusCode === 500) {
+            return true;
+        }
+        return false;
+    }
+});
+
+breaker.enable();
+
+// Will choke on 500 errors, and trigger breaker
+request('http://api.somewhere.com', (error, response, body) => {
+    console.log(body);
+});
+```
+
+NOTE: Its adviced to **not** do any asyncronous operations in this method.
 
 
 ## Timeouts
