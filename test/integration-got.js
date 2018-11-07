@@ -9,6 +9,7 @@ const http500 = require('./integration/http-status-500');
 const http500Retry = require('./integration/http-status-500-retry');
 const errorFlight = require('./integration/error-in-flight');
 const errorFlightRetry = require('./integration/error-in-flight-retry');
+const customTripper = require('./integration/custom-tripper');
 
 
 const client = async (options) => {
@@ -123,6 +124,21 @@ test('integration - got - retry: 0 - error', async (t) => {
         'circuit breaking',
         'circuit breaking',
         'circuit breaking',
+        'ok',
+        'ok',
+    ]);
+    t.end();
+});
+
+test('integration - got - retry: 0 - custom tripper', async (t) => {
+    const result = await customTripper(client);
+    t.deepEqual(result, [
+        'ok',
+        'ok',
+        'http error',
+        'http error',
+        'http error',
+        'http error',
         'ok',
         'ok',
     ]);
