@@ -1,6 +1,6 @@
 {
   "name": "circuit-b",
-  "version": "2.2.0",
+  "version": "3.0.0",
   "description": "A non intrusive circuit breaker",
   "main": "lib/main.js",
   "directories": {
