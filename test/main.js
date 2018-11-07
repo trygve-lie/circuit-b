@@ -21,6 +21,14 @@ test('CircuitB() - "maxFailures" argument is not a number - should throw', (t) =
     t.end();
 });
 
+test('CircuitB() - "onResponse" argument is not a function - should throw', (t) => {
+    t.plan(1);
+    t.throws(() => {
+        const cb = new CircuitB({ onResponse: 'foo' }); // eslint-disable-line no-unused-vars
+    }, /Provided value to argument "onResponse" is not a function/);
+    t.end();
+});
+
 test('CircuitB() - "maxAge" argument is not a number - should throw', (t) => {
     t.throws(() => {
         const cb = new CircuitB({ maxAge: 'foo' }); // eslint-disable-line no-unused-vars
@@ -53,6 +61,15 @@ test('.set() - "maxFailures" argument is not a number - should throw', (t) => {
         const cb = new CircuitB();
         cb.set('circuit-b.local', { maxFailures: 'foo' });
     }, /Provided value, foo, to argument "maxFailures" is not a number/);
+    t.end();
+});
+
+test('.set() - "onResponse" argument is not a function - should throw', (t) => {
+    t.plan(1);
+    t.throws(() => {
+        const cb = new CircuitB();
+        cb.set('circuit-b.local', { onResponse: 'foo' });
+    }, /Provided value to argument "onResponse" is not a function/);
     t.end();
 });
 

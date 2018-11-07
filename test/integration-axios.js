@@ -7,6 +7,7 @@ const timeout = require('./integration/timeout');
 const http400 = require('./integration/http-status-400');
 const http500 = require('./integration/http-status-500');
 const errorFlight = require('./integration/error-in-flight');
+const customTripper = require('./integration/custom-tripper');
 
 const client = options => new Promise((resolve) => {
     axios.get(`http://${options.host}:${options.port}/`)
@@ -115,6 +116,21 @@ test('integration - axios - error', async (t) => {
         'circuit breaking',
         'circuit breaking',
         'circuit breaking',
+        'ok',
+        'ok',
+    ]);
+    t.end();
+});
+
+test('integration - axios - custom tripper', async (t) => {
+    const result = await customTripper(client);
+    t.deepEqual(result, [
+        'ok',
+        'ok',
+        'http error',
+        'http error',
+        'http error',
+        'http error',
         'ok',
         'ok',
     ]);

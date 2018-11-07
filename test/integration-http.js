@@ -8,6 +8,7 @@ const timeout = require('./integration/timeout');
 const http400 = require('./integration/http-status-400');
 const http500 = require('./integration/http-status-500');
 const errorFlight = require('./integration/error-in-flight');
+const customTripper = require('./integration/custom-tripper');
 
 test('before', async (t) => {
     await before();
@@ -107,6 +108,20 @@ test('integration - http.get - error', async (t) => {
     t.end();
 });
 
+test('integration - http.get - custom tripper', async (t) => {
+    const result = await customTripper(clientHttp);
+    t.deepEqual(result, [
+        'ok',
+        'ok',
+        'http error',
+        'http error',
+        'http error',
+        'http error',
+        'ok',
+        'ok',
+    ]);
+    t.end();
+});
 
 test('after', async (t) => {
     await after();
