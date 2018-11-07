@@ -23,7 +23,8 @@ const test = async (client) => {
     result.push(await client(options));
     result.push(await client(options));
 
-    // two error responses which is a total of 6 requests to server, server failed at third request. total 8 request to server
+    // two error responses which is a total of 6 requests to server,
+    // server failed at third request. total 8 request to server
     result.push(await client(options));
     result.push(await client(options));
 

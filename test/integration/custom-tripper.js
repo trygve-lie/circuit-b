@@ -8,9 +8,9 @@ const test = async (client) => {
     const s = await server({ type: 'code-400', healAt: 6 });
     const address = s.address();
 
-    cb.set('circuit-b.local', { maxFailures: 4, onResponse: () => {
-            return false;
-        }
+    cb.set('circuit-b.local', {
+        maxFailures: 4,
+        onResponse: () => false,
     });
     cb.enable();
 
