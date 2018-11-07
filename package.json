@@ -3,9 +3,9 @@
   "version": "3.0.0",
   "description": "A non intrusive circuit breaker",
   "main": "lib/main.js",
-  "directories": {
-    "lib": "lib"
-  },
+  "files": [
+    "lib"
+  ],
   "repository": {
     "type": "git",
     "url": "git@github.com:trygve-lie/circuit-b.git"
