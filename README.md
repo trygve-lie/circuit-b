@@ -2,7 +2,10 @@
 
 A non intrusive circuit breaker for node.js
 
-[![Dependencies](https://img.shields.io/david/trygve-lie/circuit-b.svg?style=flat-square)](https://david-dm.org/trygve-lie/circuit-b)[![Build Status](http://img.shields.io/travis/trygve-lie/circuit-b/master.svg?style=flat-square)](https://travis-ci.org/trygve-lie/circuit-b) [![Greenkeeper badge](https://badges.greenkeeper.io/trygve-lie/circuit-b.svg)](https://greenkeeper.io/)
+[![Dependencies](https://img.shields.io/david/trygve-lie/circuit-b.svg?style=flat-square)](https://david-dm.org/trygve-lie/circuit-b)
+[![Build Status](http://img.shields.io/travis/trygve-lie/circuit-b/master.svg?style=flat-square)](https://travis-ci.org/trygve-lie/circuit-b)
+[![Greenkeeper badge](https://badges.greenkeeper.io/trygve-lie/circuit-b.svg?style=flat-square)](https://greenkeeper.io/)
+[![Known Vulnerabilities](https://snyk.io/test/github/trygve-lie/circuit-b/badge.svg?targetFile=package.json&style=flat-square)](https://snyk.io/test/github/trygve-lie/circuit-b?targetFile=package.json)
 
 
 ## Installation
