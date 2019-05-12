@@ -1,8 +1,13 @@
 language: node_js
 
 node_js:
-  - '11'
+  - '12'
   - '10'
+
+os:
+  - linux
+  - osx
+  - windows
 
 script:
   - sudo env "PATH=$PATH" npm test
@@ -29,6 +34,10 @@ jobs:
       env: NVM_NODEJS_ORG_MIRROR=https://nodejs.org/download/nightly/
 
     # Release Candidates
+    -
+      node_js: '12'
+      if: type = cron
+      env: NVM_NODEJS_ORG_MIRROR=https://nodejs.org/download/rc/
     -
       node_js: '11'
       if: type = cron
