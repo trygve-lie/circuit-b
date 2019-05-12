@@ -63,7 +63,15 @@ const test = async () => {
     cb.disable();
 
     const arr = await result.result();
-    return arr.map(obj => obj.meta.state);
+
+    // flatten array to only state values
+    return arr.map(obj => {
+        return obj.labels.filter(item => {
+            return (item.name === 'state');
+        }).map(item => {
+            return item.value;
+        })[0];
+    });
 };
 
 module.exports = test;
