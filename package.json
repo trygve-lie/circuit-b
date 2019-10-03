@@ -53,7 +53,7 @@
     "tape": "^4.11.0"
   },
   "dependencies": {
-    "@metrics/client": "2.4.1",
+    "@metrics/client": "2.5.0",
     "abslog": "2.4.0"
   }
 }
