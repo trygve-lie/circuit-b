@@ -65,13 +65,7 @@ const test = async () => {
     const arr = await result.result();
 
     // flatten array to only state values
-    return arr.map(obj => {
-        return obj.labels.filter(item => {
-            return (item.name === 'state');
-        }).map(item => {
-            return item.value;
-        })[0];
-    });
+    return arr.map(obj => obj.labels.filter(item => (item.name === 'state')).map(item => item.value)[0]);
 };
 
 module.exports = test;
