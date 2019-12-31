@@ -36,12 +36,14 @@
     "test:breaker": "tape test/breaker.js | tap-summary",
     "test:utils": "tape test/utils.js | tap-summary",
     "test:main": "tape test/main.js | tap-summary",
-    "lint": "eslint test/* lib/*",
-    "lint:fix": "eslint test/* lib/* --fix"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "devDependencies": {
     "eslint": "^6.0.1",
     "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-config-prettier": "^6.9.0",
+    "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-import": "^2.18.0",
     "hostile": "^1.3.2",
     "request": "^2.88.0",
@@ -50,7 +52,8 @@
     "got": "^9.6.0",
     "synclog": "^1.0.1",
     "tap-summary": "^4.0.0",
-    "tape": "^4.11.0"
+    "tape": "^4.11.0",
+    "prettier": "^1.19.1"
   },
   "dependencies": {
     "@metrics/client": "2.4.1",
