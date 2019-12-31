@@ -22,6 +22,6 @@ jobs:
           CI: true
       - name: Run tests
         run: |
-          npm run lint && npm test
+          npm run lint && sudo npm test
         env:
           CI: true
