@@ -12,7 +12,7 @@
   },
   {
     "depTypeList": ["devDependencies"],
-    "schedule": ["before 4am on monday"],
+    "schedule": ["before 4am on thursday"],
     "commitMessage": "Dev dependency {{depName}} updated to version {{newValue}}",
     "prTitle": "Dev dependency update: {{depName}}",
     "automerge": true,
