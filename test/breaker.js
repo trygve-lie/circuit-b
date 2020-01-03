@@ -1,6 +1,6 @@
 'use strict';
 
-const test = require('tape');
+const { test } = require('tap');
 const { sleep, within } = require('../utils/utils');
 const Breaker = require('../lib/breaker');
 

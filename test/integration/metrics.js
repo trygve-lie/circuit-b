@@ -5,7 +5,7 @@ const {
     server, clientHttp, sleep, DestObjectStream,
 } = require('../../utils/utils');
 
-const test = async () => {
+const test = async (host = 'circuit-b.local') => {
     const cb = new CircuitB({ maxAge: 200, timeout: 100 });
     const s = await server({ type: 'code-500', healAt: 7 });
     const address = s.address();
@@ -13,11 +13,11 @@ const test = async () => {
     const result = new DestObjectStream();
     cb.metrics.pipe(result);
 
-    cb.set('circuit-b.local', { maxFailures: 4 });
+    cb.set(host, { maxFailures: 4 });
     cb.enable();
 
     const options = {
-        host: 'circuit-b.local',
+        host,
         port: address.port,
         timeout: 2000,
         retry: 0,

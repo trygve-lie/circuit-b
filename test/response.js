@@ -1,6 +1,6 @@
 'use strict';
 
-const test = require('tape');
+const { test } = require('tap');
 const response = require('../lib/response');
 
 test('response() - no "res" argument - should return "true"', (t) => {

@@ -25,17 +25,17 @@
     "scalability"
   ],
   "scripts": {
-    "test": "tape test/*.js | tap-summary",
-    "test:metrics": "tape test/integration-metrics.js | tap-summary",
-    "test:request": "tape test/integration-request.js | tap-summary",
-    "test:fetch": "tape test/integration-fetch.js | tap-summary",
-    "test:axios": "tape test/integration-axios.js | tap-summary",
-    "test:http": "tape test/integration-http.js | tap-summary",
-    "test:got": "tape test/integration-got.js | tap-summary",
-    "test:response": "tape test/response.js | tap-summary",
-    "test:breaker": "tape test/breaker.js | tap-summary",
-    "test:utils": "tape test/utils.js | tap-summary",
-    "test:main": "tape test/main.js | tap-summary",
+    "test": "tap test/*.js",
+    "test:metrics": "tap test/integration-metrics.js",
+    "test:request": "tap test/integration-request.js",
+    "test:fetch": "tap test/integration-fetch.js",
+    "test:axios": "tap test/integration-axios.js",
+    "test:http": "tap test/integration-http.js",
+    "test:got": "tap test/integration-got.js",
+    "test:response": "tap test/response.js",
+    "test:breaker": "tap test/breaker.js",
+    "test:utils": "tap test/utils.js",
+    "test:main": "tap test/main.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
@@ -51,9 +51,8 @@
     "node-fetch": "2.5.0",
     "got": "10.2.0",
     "synclog": "1.0.1",
-    "tap-summary": "4.0.0",
-    "tape": "4.11.0",
-    "prettier": "1.19.1"
+    "prettier": "1.19.1",
+    "tap": "14.10.5"
   },
   "dependencies": {
     "@metrics/client": "2.5.0",

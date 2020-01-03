@@ -1,7 +1,7 @@
 'use strict';
 
 const got = require('got');
-const test = require('tape');
+const { test } = require('tap');
 const { before, after } = require('../utils/utils');
 const timeout = require('./integration/timeout');
 const http400 = require('./integration/http-status-400');
@@ -11,6 +11,7 @@ const errorFlight = require('./integration/error-in-flight');
 const errorFlightRetry = require('./integration/error-in-flight-retry');
 const customTripper = require('./integration/custom-tripper');
 
+const HOST = 'circuit-b-got.local';
 
 const client = async (options) => {
     const opts = {
@@ -38,12 +39,12 @@ const client = async (options) => {
 
 
 test('before', async (t) => {
-    await before();
+    await before(HOST);
     t.end();
 });
 
 test('integration - got - retry: 0 - timeouts', async (t) => {
-    const result = await timeout(client);
+    const result = await timeout(client, HOST);
     t.deepEqual(result, [
         'ok',
         'ok',
@@ -65,7 +66,7 @@ test('integration - got - retry: 0 - timeouts', async (t) => {
 });
 
 test('integration - got - retry: 0 - http status 400 errors', async (t) => {
-    const result = await http400(client);
+    const result = await http400(client, HOST);
     t.deepEqual(result, [
         'ok',
         'ok',
@@ -87,7 +88,7 @@ test('integration - got - retry: 0 - http status 400 errors', async (t) => {
 });
 
 test('integration - got - retry: 0 - http status 500 errors', async (t) => {
-    const result = await http500(client);
+    const result = await http500(client, HOST);
     t.deepEqual(result, [
         'ok',
         'ok',
@@ -109,7 +110,7 @@ test('integration - got - retry: 0 - http status 500 errors', async (t) => {
 });
 
 test('integration - got - retry: 0 - error', async (t) => {
-    const result = await errorFlight(client);
+    const result = await errorFlight(client, HOST);
     t.deepEqual(result, [
         'ok',
         'ok',
@@ -131,7 +132,7 @@ test('integration - got - retry: 0 - error', async (t) => {
 });
 
 test('integration - got - retry: 0 - custom tripper', async (t) => {
-    const result = await customTripper(client);
+    const result = await customTripper(client, HOST);
     t.deepEqual(result, [
         'ok',
         'ok',
@@ -146,7 +147,7 @@ test('integration - got - retry: 0 - custom tripper', async (t) => {
 });
 
 test('integration - got - retry: default(2) - http status 500 errors', async (t) => {
-    const result = await http500Retry(client);
+    const result = await http500Retry(client, HOST);
     t.deepEqual(result, [
         'ok',
         'ok',
@@ -166,7 +167,7 @@ test('integration - got - retry: default(2) - http status 500 errors', async (t)
 });
 
 test('integration - got - retry: default (2) - error', async (t) => {
-    const result = await errorFlightRetry(client);
+    const result = await errorFlightRetry(client, HOST);
     t.deepEqual(result, [
         'ok',
         'ok',
@@ -187,6 +188,6 @@ test('integration - got - retry: default (2) - error', async (t) => {
 
 
 test('after', async (t) => {
-    await after();
+    await after(HOST);
     t.end();
 });

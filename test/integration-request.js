@@ -1,13 +1,15 @@
 'use strict';
 
 const request = require('request');
-const test = require('tape');
+const { test } = require('tap');
 const { before, after } = require('../utils/utils');
 const timeout = require('./integration/timeout');
 const http400 = require('./integration/http-status-400');
 const http500 = require('./integration/http-status-500');
 const errorFlight = require('./integration/error-in-flight');
 const customTripper = require('./integration/custom-tripper');
+
+const HOST = 'circuit-b-request.local';
 
 const client = options => new Promise((resolve) => {
     const opts = {
@@ -46,12 +48,12 @@ const client = options => new Promise((resolve) => {
 });
 
 test('before', async (t) => {
-    await before();
+    await before(HOST);
     t.end();
 });
 
 test('integration - request.js - timeouts', async (t) => {
-    const result = await timeout(client);
+    const result = await timeout(client, HOST);
     t.deepEqual(result, [
         'ok',
         'ok',
@@ -73,7 +75,7 @@ test('integration - request.js - timeouts', async (t) => {
 });
 
 test('integration - request.js - http status 400 errors', async (t) => {
-    const result = await http400(client);
+    const result = await http400(client, HOST);
     t.deepEqual(result, [
         'ok',
         'ok',
@@ -95,7 +97,7 @@ test('integration - request.js - http status 400 errors', async (t) => {
 });
 
 test('integration - request.js - http status 500 errors', async (t) => {
-    const result = await http500(client);
+    const result = await http500(client, HOST);
     t.deepEqual(result, [
         'ok',
         'ok',
@@ -117,7 +119,7 @@ test('integration - request.js - http status 500 errors', async (t) => {
 });
 
 test('integration - request.js - error', async (t) => {
-    const result = await errorFlight(client);
+    const result = await errorFlight(client, HOST);
     t.deepEqual(result, [
         'ok',
         'ok',
@@ -139,7 +141,7 @@ test('integration - request.js - error', async (t) => {
 });
 
 test('integration - request.js - custom tripper', async (t) => {
-    const result = await customTripper(client);
+    const result = await customTripper(client, HOST);
     t.deepEqual(result, [
         'ok',
         'ok',
@@ -154,6 +156,6 @@ test('integration - request.js - custom tripper', async (t) => {
 });
 
 test('after', async (t) => {
-    await after();
+    await after(HOST);
     t.end();
 });

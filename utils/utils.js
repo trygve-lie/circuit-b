@@ -45,7 +45,7 @@ const server = ({ failAt = 3, healAt = 10, type = 'code-500' } = {}) => new Prom
 module.exports.server = server;
 
 
-const clientHttp = options => new Promise((resolve) => {
+const clientHttp = (options) => new Promise((resolve) => {
     const req = http.get(options);
 
     req.on('response', (res) => {
@@ -95,8 +95,8 @@ const within = (value, min = 0, max = 10) => {
 };
 module.exports.within = within;
 
-const before = () => new Promise((resolve, reject) => {
-    hostile.set('127.0.0.1', 'circuit-b.local', (error) => {
+const before = (host = 'circuit-b.local') => new Promise((resolve, reject) => {
+    hostile.set('127.0.0.1', host, (error) => {
         if (error) {
             reject(error);
             return;
@@ -106,8 +106,8 @@ const before = () => new Promise((resolve, reject) => {
 });
 module.exports.before = before;
 
-const after = () => new Promise((resolve, reject) => {
-    hostile.remove('127.0.0.1', 'circuit-b.local', (error) => {
+const after = (host = 'circuit-b.local') => new Promise((resolve, reject) => {
+    hostile.remove('127.0.0.1', host, (error) => {
         if (error) {
             reject(error);
             return;
