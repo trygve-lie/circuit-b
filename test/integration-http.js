@@ -13,6 +13,7 @@ const customTripper = require('./integration/custom-tripper');
 const HOST = 'circuit-b-http.local';
 
 test('before', async (t) => {
+    // WARNING: This mutates the host file permanently
     await before(HOST);
     t.end();
 });
@@ -122,10 +123,5 @@ test('integration - http.get - custom tripper', async (t) => {
         'ok',
         'ok',
     ]);
-    t.end();
-});
-
-test('after', async (t) => {
-    await after(HOST);
     t.end();
 });

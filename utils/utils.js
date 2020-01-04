@@ -106,6 +106,7 @@ const before = (host = 'circuit-b.local') => new Promise((resolve, reject) => {
 });
 module.exports.before = before;
 
+/*
 const after = (host = 'circuit-b.local') => new Promise((resolve, reject) => {
     hostile.remove('127.0.0.1', host, (error) => {
         if (error) {
@@ -116,6 +117,7 @@ const after = (host = 'circuit-b.local') => new Promise((resolve, reject) => {
     });
 });
 module.exports.after = after;
+*/
 
 const DestObjectStream = class DestObjectStream extends stream.Writable {
     constructor(...args) {

@@ -39,6 +39,7 @@ const client = async (options) => {
 
 
 test('before', async (t) => {
+    // WARNING: This mutates the host file permanently
     await before(HOST);
     t.end();
 });
@@ -183,11 +184,5 @@ test('integration - got - retry: default (2) - error', async (t) => {
         'ok',
         'ok',
     ]);
-    t.end();
-});
-
-
-test('after', async (t) => {
-    await after(HOST);
     t.end();
 });

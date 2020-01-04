@@ -48,6 +48,7 @@ const client = options => new Promise((resolve) => {
 });
 
 test('before', async (t) => {
+    // WARNING: This mutates the host file permanently
     await before(HOST);
     t.end();
 });
@@ -152,10 +153,5 @@ test('integration - request.js - custom tripper', async (t) => {
         'ok',
         'ok',
     ]);
-    t.end();
-});
-
-test('after', async (t) => {
-    await after(HOST);
     t.end();
 });
