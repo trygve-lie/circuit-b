@@ -37,7 +37,7 @@ test('before', async (t) => {
     t.end();
 });
 
-test('integration - axios - timeouts', async (t) => {
+test('integration - axios - timeouts', { timeout: 40000 }, async (t) => {
     const result = await timeout(client, HOST);
     t.deepEqual(result, [
         'ok',
@@ -59,7 +59,7 @@ test('integration - axios - timeouts', async (t) => {
     t.end();
 });
 
-test('integration - axios - http status 400 errors', async (t) => {
+test('integration - axios - http status 400 errors', { timeout: 40000 }, async (t) => {
     const result = await http400(client, HOST);
     t.deepEqual(result, [
         'ok',
@@ -81,7 +81,7 @@ test('integration - axios - http status 400 errors', async (t) => {
     t.end();
 });
 
-test('integration - axios - http status 500 errors', async (t) => {
+test('integration - axios - http status 500 errors', { timeout: 40000 }, async (t) => {
     const result = await http500(client, HOST);
     t.deepEqual(result, [
         'ok',
@@ -103,7 +103,7 @@ test('integration - axios - http status 500 errors', async (t) => {
     t.end();
 });
 
-test('integration - axios - error', async (t) => {
+test('integration - axios - error', { timeout: 40000 }, async (t) => {
     const result = await errorFlight(client, HOST);
     t.deepEqual(result, [
         'ok',
@@ -125,7 +125,7 @@ test('integration - axios - error', async (t) => {
     t.end();
 });
 
-test('integration - axios - custom tripper', async (t) => {
+test('integration - axios - custom tripper', { timeout: 40000 }, async (t) => {
     const result = await customTripper(client, HOST);
     t.deepEqual(result, [
         'ok',
