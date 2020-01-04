@@ -1,9 +1,7 @@
 'use strict';
 
 const { test } = require('tap');
-const {
-    before, after,
-} = require('../utils/utils');
+const { before } = require('../utils/utils');
 const metrics = require('./integration/metrics');
 
 const HOST = 'circuit-b-metrics.local';
