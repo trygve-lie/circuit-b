@@ -12,7 +12,7 @@ const customTripper = require('./integration/custom-tripper');
 const HOST = 'circuit-b-axios.local';
 
 const client = options => new Promise((resolve) => {
-    axios.get(`http://${options.host}:${options.port}/`)
+    axios.get(`http://${options.host}:${options.port}/`, { timeout: 25000 })
         .then((res) => {
             resolve(res.data);
         })
