@@ -79,6 +79,8 @@ const test = async (client, host = 'circuit-b.local') => {
     console.log(host, times);
 
     cb.disable();
+    cb.del(host);
+
     return result;
 };
 

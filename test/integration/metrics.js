@@ -59,8 +59,8 @@ const test = async (host = 'circuit-b.local') => {
     await s.stop();
     await sleep(20);
 
-    cb.del('circuit-b.local');
     cb.disable();
+    cb.del(host);
 
     const arr = await result.result();
 
