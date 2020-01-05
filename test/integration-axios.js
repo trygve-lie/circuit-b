@@ -39,6 +39,7 @@ test('before', async (t) => {
 
 test('integration - axios - timeouts', async (t) => {
     const result = await timeout(client, HOST);
+    console.log(HOST, result);
     t.deepEqual(result, [
         'ok',
         'ok',
