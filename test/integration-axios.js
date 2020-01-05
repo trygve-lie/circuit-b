@@ -12,7 +12,7 @@ const customTripper = require('./integration/custom-tripper');
 const HOST = 'circuit-b-axios.local';
 
 const client = options => new Promise((resolve) => {
-    axios.get(`http://${options.host}:${options.port}/`, { timeout: 25000 })
+    axios.get(`http://${options.host}:${options.port}/`, options)
         .then((res) => {
             resolve(res.data);
         })
@@ -37,7 +37,7 @@ test('before', async (t) => {
     t.end();
 });
 
-test('integration - axios - timeouts', { timeout: 40000 }, async (t) => {
+test('integration - axios - timeouts', async (t) => {
     const result = await timeout(client, HOST);
     t.deepEqual(result, [
         'ok',
@@ -59,7 +59,7 @@ test('integration - axios - timeouts', { timeout: 40000 }, async (t) => {
     t.end();
 });
 
-test('integration - axios - http status 400 errors', { timeout: 40000 }, async (t) => {
+test('integration - axios - http status 400 errors', async (t) => {
     const result = await http400(client, HOST);
     t.deepEqual(result, [
         'ok',
@@ -81,7 +81,7 @@ test('integration - axios - http status 400 errors', { timeout: 40000 }, async (
     t.end();
 });
 
-test('integration - axios - http status 500 errors', { timeout: 40000 }, async (t) => {
+test('integration - axios - http status 500 errors', async (t) => {
     const result = await http500(client, HOST);
     t.deepEqual(result, [
         'ok',
@@ -103,7 +103,7 @@ test('integration - axios - http status 500 errors', { timeout: 40000 }, async (
     t.end();
 });
 
-test('integration - axios - error', { timeout: 40000 }, async (t) => {
+test('integration - axios - error', async (t) => {
     const result = await errorFlight(client, HOST);
     t.deepEqual(result, [
         'ok',
@@ -125,7 +125,7 @@ test('integration - axios - error', { timeout: 40000 }, async (t) => {
     t.end();
 });
 
-test('integration - axios - custom tripper', { timeout: 40000 }, async (t) => {
+test('integration - axios - custom tripper', async (t) => {
     const result = await customTripper(client, HOST);
     t.deepEqual(result, [
         'ok',
