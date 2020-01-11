@@ -1,6 +1,5 @@
 'use strict';
 
-const hostile = require('hostile');
 const stream = require('stream');
 const http = require('http');
 
@@ -94,30 +93,6 @@ const within = (value, min = 0, max = 10) => {
     return false;
 };
 module.exports.within = within;
-
-const before = (host = 'circuit-b.local') => new Promise((resolve, reject) => {
-    hostile.set('127.0.0.1', host, (error) => {
-        if (error) {
-            reject(error);
-            return;
-        }
-        resolve();
-    });
-});
-module.exports.before = before;
-
-/*
-const after = (host = 'circuit-b.local') => new Promise((resolve, reject) => {
-    hostile.remove('127.0.0.1', host, (error) => {
-        if (error) {
-            reject(error);
-            return;
-        }
-        resolve();
-    });
-});
-module.exports.after = after;
-*/
 
 const DestObjectStream = class DestObjectStream extends stream.Writable {
     constructor(...args) {

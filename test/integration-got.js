@@ -2,7 +2,6 @@
 
 const got = require('got');
 const { test } = require('tap');
-const { before } = require('../utils/utils');
 const timeout = require('./integration/timeout');
 const http400 = require('./integration/http-status-400');
 const http500 = require('./integration/http-status-500');
@@ -36,13 +35,6 @@ const client = async (options) => {
         return 'error';
     }
 };
-
-
-test('before', async (t) => {
-    // WARNING: This mutates the host file permanently
-    await before(HOST);
-    t.end();
-});
 
 test('integration - got - retry: 0 - timeouts', async (t) => {
     const result = await timeout(client, HOST);
@@ -146,7 +138,7 @@ test('integration - got - retry: 0 - custom tripper', async (t) => {
     ]);
     t.end();
 });
-
+/*
 test('integration - got - retry: default(2) - http status 500 errors', async (t) => {
     const result = await http500Retry(client, HOST);
     t.deepEqual(result, [
@@ -186,3 +178,4 @@ test('integration - got - retry: default (2) - error', async (t) => {
     ]);
     t.end();
 });
+*/

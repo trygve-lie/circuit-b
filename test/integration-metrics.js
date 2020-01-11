@@ -1,17 +1,9 @@
 'use strict';
 
 const { test } = require('tap');
-const { before } = require('../utils/utils');
 const metrics = require('./integration/metrics');
 
 const HOST = 'circuit-b-metrics.local';
-
-test('before', async (t) => {
-    // WARNING: This mutates the host file permanently
-    await before(HOST);
-    t.end();
-});
-
 
 /**
  * Metrics

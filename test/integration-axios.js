@@ -2,7 +2,6 @@
 
 const { test } = require('tap');
 const axios = require('axios');
-const { before } = require('../utils/utils');
 const timeout = require('./integration/timeout');
 const http400 = require('./integration/http-status-400');
 const http500 = require('./integration/http-status-500');
@@ -29,12 +28,6 @@ const client = options => new Promise((resolve) => {
                 resolve('error');
             }
         });
-});
-
-test('before', async (t) => {
-    // WARNING: This mutates the host file permanently
-    await before(HOST);
-    t.end();
 });
 
 test('integration - axios - timeouts', async (t) => {

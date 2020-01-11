@@ -1,7 +1,7 @@
 'use strict';
 
 const { test } = require('tap');
-const { before, clientHttp } = require('../utils/utils');
+const { clientHttp } = require('../utils/utils');
 const timeout = require('./integration/timeout');
 const http400 = require('./integration/http-status-400');
 const http500 = require('./integration/http-status-500');
@@ -9,13 +9,6 @@ const errorFlight = require('./integration/error-in-flight');
 const customTripper = require('./integration/custom-tripper');
 
 const HOST = 'circuit-b-http.local';
-
-test('before', async (t) => {
-    // WARNING: This mutates the host file permanently
-    await before(HOST);
-    t.end();
-});
-
 
 /**
  * Native node.js http.get()
