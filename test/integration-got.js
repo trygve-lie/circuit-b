@@ -138,7 +138,7 @@ test('integration - got - retry: 0 - custom tripper', async (t) => {
     ]);
     t.end();
 });
-/*
+
 test('integration - got - retry: default(2) - http status 500 errors', async (t) => {
     const result = await http500Retry(client, HOST);
     t.deepEqual(result, [
@@ -178,4 +178,3 @@ test('integration - got - retry: default (2) - error', async (t) => {
     ]);
     t.end();
 });
-*/
