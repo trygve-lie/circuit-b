@@ -1,6 +1,6 @@
 'use strict';
 
-const test = require('tape');
+const { test } = require('tap');
 const { sleep, within } = require('../utils/utils');
 const Breaker = require('../lib/breaker');
 
@@ -257,12 +257,12 @@ test('.check() - "maxTreshold" is reached - should return "false" on first check
 
     result = breaker.check();
     t.equal(breaker.state, 'HALF_OPEN');
-    t.true(within(breaker.tripped - now, 214, 226));
+    t.true(within(breaker.tripped - now, 200, 240));
     t.false(result);
 
     result = breaker.check();
     t.equal(breaker.state, 'OPEN');
-    t.true(within(breaker.tripped - now, 214, 226));
+    t.true(within(breaker.tripped - now, 200, 240));
     t.true(result);
 
     breaker.reset();

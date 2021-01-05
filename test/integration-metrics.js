@@ -1,23 +1,16 @@
 'use strict';
 
-const test = require('tape');
-const {
-    before, after,
-} = require('../utils/utils');
+const { test } = require('tap');
 const metrics = require('./integration/metrics');
 
-test('before', async (t) => {
-    await before();
-    t.end();
-});
-
+const HOST = 'circuit-b-metrics.local';
 
 /**
  * Metrics
  */
 
 test('integration - metrics', async (t) => {
-    const result = await metrics();
+    const result = await metrics(HOST);
     t.deepEqual(result, [
         'closed',
         'closed',
@@ -35,11 +28,5 @@ test('integration - metrics', async (t) => {
         'half_open',
         'closed',
     ]);
-    t.end();
-});
-
-
-test('after', async (t) => {
-    await after();
     t.end();
 });

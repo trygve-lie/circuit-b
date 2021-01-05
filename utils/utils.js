@@ -1,6 +1,5 @@
 'use strict';
 
-const hostile = require('hostile');
 const stream = require('stream');
 const http = require('http');
 
@@ -45,7 +44,7 @@ const server = ({ failAt = 3, healAt = 10, type = 'code-500' } = {}) => new Prom
 module.exports.server = server;
 
 
-const clientHttp = options => new Promise((resolve) => {
+const clientHttp = (options) => new Promise((resolve) => {
     const req = http.get(options);
 
     req.on('response', (res) => {
@@ -94,28 +93,6 @@ const within = (value, min = 0, max = 10) => {
     return false;
 };
 module.exports.within = within;
-
-const before = () => new Promise((resolve, reject) => {
-    hostile.set('127.0.0.1', 'circuit-b.local', (error) => {
-        if (error) {
-            reject(error);
-            return;
-        }
-        resolve();
-    });
-});
-module.exports.before = before;
-
-const after = () => new Promise((resolve, reject) => {
-    hostile.remove('127.0.0.1', 'circuit-b.local', (error) => {
-        if (error) {
-            reject(error);
-            return;
-        }
-        resolve();
-    });
-});
-module.exports.after = after;
 
 const DestObjectStream = class DestObjectStream extends stream.Writable {
     constructor(...args) {

@@ -3,16 +3,16 @@
 const CircuitB = require('../../');
 const { server, sleep } = require('../../utils/utils');
 
-const test = async (client) => {
+const test = async (client, host = 'circuit-b.local') => {
     const cb = new CircuitB({ maxAge: 200, timeout: 100 });
     const s = await server({ type: 'code-400', healAt: 7 });
     const address = s.address();
 
-    cb.set('circuit-b.local', { maxFailures: 4 });
+    cb.set(host, { maxFailures: 4 });
     cb.enable();
 
     const options = {
-        host: 'circuit-b.local',
+        host,
         port: address.port,
         timeout: 2000,
         retry: 0,
@@ -57,6 +57,8 @@ const test = async (client) => {
     await sleep(20);
 
     cb.disable();
+    cb.del(host);
+
     return result;
 };
 
