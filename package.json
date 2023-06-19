@@ -48,7 +48,7 @@
     "hostile": "1.3.3",
     "request": "2.88.2",
     "axios": "0.21.1",
-    "node-fetch": "2.6.1",
+    "node-fetch": "2.6.7",
     "got": "10.2.1",
     "synclog": "1.0.1",
     "tap-summary": "4.0.0",
