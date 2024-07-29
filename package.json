@@ -56,7 +56,7 @@
     "prettier": "1.19.1"
   },
   "dependencies": {
-    "@metrics/client": "2.5.0",
+    "@metrics/client": "2.5.3",
     "abslog": "2.4.0"
   }
 }
