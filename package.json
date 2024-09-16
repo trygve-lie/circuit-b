@@ -52,7 +52,7 @@
     "got": "10.2.1",
     "synclog": "1.0.1",
     "tap-summary": "4.0.0",
-    "tape": "4.12.1",
+    "tape": "5.9.0",
     "prettier": "1.19.1"
   },
   "dependencies": {
