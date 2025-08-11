@@ -57,6 +57,6 @@
   },
   "dependencies": {
     "@metrics/client": "2.5.0",
-    "abslog": "2.4.0"
+    "abslog": "2.4.4"
   }
 }
